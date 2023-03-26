@@ -1,4 +1,12 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import vuetify from './plugins/vuetify'
+import { loadFonts } from './plugins/webfontloader'
 
-createApp(App).mount('#app')
+import '@fortawesome/fontawesome-free/js/all'
+
+loadFonts()
+
+createApp(App)
+  .use(vuetify)
+  .mount('#app')
