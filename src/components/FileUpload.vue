@@ -30,8 +30,9 @@
                 this.selectedFile = event.target.files[0] //currently only one template at a time, so [0] is ok
             },
             onUpload(){
-                 
-                axios.post('URL')
+                const formData = new FormData();
+                formData.append('file', this.selectedFile);
+                axios.post('http://localhost:8080/upload/template', formData)
             }
         }
     }
