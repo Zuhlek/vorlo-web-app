@@ -1,13 +1,20 @@
 <template>
     <div>
       <h1>Templates</h1>
-      <p>Here are the templates.</p>
+      <p>Word files only!</p>
+      <br>
+      <FileUpload/>
     </div>
   </template>
   
   <script>
-  export default {
-    name: "templates-view",
-  };
+    import FileUpload from '@/components/FileUpload.vue';
+
+    export default {
+      name: "templates-view",
+      components: {
+        FileUpload
+      }
+    };
   </script>
   
