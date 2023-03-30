@@ -1,11 +1,11 @@
 <template>
-    <div>
+
       <h1>Templates</h1>
       <p>Word files only!</p>
       <br>
       <FileUpload/>
       <TemplateList/>
-    </div>
+
   </template>
   
   <script>

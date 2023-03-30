@@ -1,25 +1,41 @@
 <template>
-    <Navbar />
-    <div id="main-content">
-      <router-view />
-    </div>
-  </template>
+
+  <v-card>
+    <v-layout>
+      <AppBar />
+      <NavBar />
+    </v-layout>
+  </v-card>
+  <div id="main-content" :style="{ marginLeft: mainContentMarginLeft }">
+    <router-view />
+  </div>
+</template>
   
 
 <script>
-    import Navbar from './components/Navbar.vue';
+import NavBar from './components/NavBar.vue';
+import AppBar from './components/AppBar.vue';
 
-    export default {
-        components: {
-            Navbar
-        }
+export default {
+  data() {
+    return {
+      drawer: true,
     }
+  },
+  components: {
+    AppBar,
+    NavBar
+  },
+  computed: {
+    mainContentMarginLeft() {
+      return this.drawer ? '300px' : '72px';
+    },
+  },
+}
 </script>
 
 <style>
 #main-content {
-  margin-top: 64px; /* Height of the top bar */
-  margin-left: 300px; /* Width of the side nav */
-  padding: 16px; /* Optional padding */
-}
-</style>
+  margin-top: 64px;
+  /* Height of the top bar */
+}</style>
