@@ -3,10 +3,10 @@
     https://www.youtube.com/watch?v=VqnJwh6E9ak&ab_channel=Academind
 */
 <template>
-
+    <v-sheet rounded color="green-lighten-5">
         <v-form v-model="valid" ref="newTemplateForm">
             <v-container>
-                <v-row align="start">
+                <v-row>
                     <v-col>
                         <v-text-field label="Template name" variant="underlined" :rules="valueRequired"
                             v-model="templateName" />
@@ -14,9 +14,7 @@
                     <v-col>
                         <v-file-input label="Select template from files" variant="underlined"
                             accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                            show-size 
-                            :rules="fileRequired"
-                            @change="onFileSelected">
+                            show-size :rules="fileRequired" @change="onFileSelected">
                         </v-file-input>
                     </v-col>
                 </v-row>
@@ -31,7 +29,7 @@
                 </v-row>
             </v-container>
         </v-form>
-
+    </v-sheet>
 </template>
 
 <script>
@@ -39,7 +37,7 @@
 import axios from 'axios'
 export default {
     name: 'file-upload',
-    
+
     data() {
         return {
             valueRequired: [

@@ -1,9 +1,9 @@
 <template>
   <div class="pa-6">
-    <h1>Templates</h1>
-    <p>Word files only!</p>
+    <h1>Create a new template</h1>
     <br>
     <FileUpload />
+    <v-divider class="my-12"></v-divider>
     <TemplateList />
   </div>
 </template>

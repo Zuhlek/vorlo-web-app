@@ -1,6 +1,6 @@
 <template>
 
-        <v-table density="compact">
+        <v-table density="compact" theme="dark">
             <thead>
                 <tr>
                     <th class="text-left">
