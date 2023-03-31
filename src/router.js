@@ -5,12 +5,12 @@ import Templates from './views/Templates.vue';
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'Home',
     component: Home,
   },
   {
     path: '/templates',
-    name: 'templates',
+    name: 'Templates',
     component: Templates,
   },
 ];

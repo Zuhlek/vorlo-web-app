@@ -1,23 +1,23 @@
 <template>
-
-      <h1>Templates</h1>
-      <p>Word files only!</p>
-      <br>
-      <FileUpload/>
-      <TemplateList/>
-
-  </template>
+  <div class="pa-6">
+    <h1>Templates</h1>
+    <p>Word files only!</p>
+    <br>
+    <FileUpload />
+    <TemplateList />
+  </div>
+</template>
   
-  <script>
-    import FileUpload from '@/components/FileUpload.vue';
-    import TemplateList from '@/components/TemplateList.vue';
+<script>
+import FileUpload from '@/components/FileUpload.vue';
+import TemplateList from '@/components/TemplateList.vue';
 
-    export default {
-      name: "templates-view",
-      components: {
-        FileUpload,
-        TemplateList
-      }
-    };
-  </script>
+export default {
+  name: "templates-view",
+  components: {
+    FileUpload,
+    TemplateList
+  }
+};
+</script>
   
