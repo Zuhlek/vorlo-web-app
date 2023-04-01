@@ -4,39 +4,28 @@
 */
 <template>
     <v-sheet rounded color="green-lighten-5">
-        <v-form v-model="valid" ref="newTemplateForm">
-            <v-container>
-                <v-row>
-                    <v-col>
-                        <v-text-field label="Template name" variant="underlined" :rules="valueRequired"
-                            v-model="templateName" />
-                    </v-col>
-                    <v-col>
-                        <v-file-input label="Select template from files" variant="underlined"
-                            accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                            show-size :rules="fileRequired" @change="onFileSelected">
-                        </v-file-input>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field label="Template description" variant="underlined" :rules="valueRequired"
-                            v-model="templateDescription" />
-                    </v-col>
-                    <v-col>
-                        <v-btn type="submit" variant="tonal" @click.prevent="submit" :disabled="!valid">Upload</v-btn>
-                    </v-col>
-                </v-row>
+        <v-form v-model="valid" class="pa-6" ref="newTemplateForm">
+            <v-file-input label="Select template from files" variant="underlined"
+                accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                show-size :rules="fileRequired" @change="onFileSelected">
+            </v-file-input>
+            <v-text-field label="Template description" variant="underlined" :rules="valueRequired"
+                v-model="templateDescription" />
+            <v-text-field label="Template name" variant="underlined" :rules="valueRequired" v-model="templateName" />
+            <v-container class="d-flex justify-center">
+                <v-btn type="submit" variant="tonal" @click.prevent="submit" :disabled="!valid">Upload</v-btn>
             </v-container>
+
         </v-form>
     </v-sheet>
 </template>
 
 <script>
-
 import axios from 'axios'
+
+const SERVER_API_URL_CREATE_TEMPLATE = 'http://localhost:8080/api/v1/templates/'
 export default {
-    name: 'file-upload',
+    name: 'template-upload-form',
 
     data() {
         return {
@@ -66,15 +55,20 @@ export default {
                     }
                 }
                 formData.append('file', this.templateFile, this.templateFile.name);
-                formData.append('templateName', this.templateName)
-                formData.append('templateDescription', this.templateDescription)
-                axios.post('http://localhost:8080/template/upload', formData, config, {
+                formData.append('ownerId', 1);  //currently just 1, no user logic yet
+                formData.append('templateName', this.templateName);
+                formData.append('templateDescription', this.templateDescription);
+                axios.post(SERVER_API_URL_CREATE_TEMPLATE, formData, config, {
                     onDownloadProgress: uploadEvent => {
                         console.log('Upload Progress: ' + Math.round(uploadEvent.loaded / uploadEvent.total * 100) + "%")
                     }
                 })
                     .then((res) => {
                         console.log(res)
+                        this.$refs.newTemplateForm.reset()
+                        this.templateFile = null;
+                        this.templateName = null;
+                        this.templateDescription = null;
                     })
             }
         }

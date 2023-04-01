@@ -4,7 +4,7 @@
         app
         rail
         permanent
-        expand-on-hover
+
         theme="dark"
         >
 
@@ -42,9 +42,14 @@ export default {
                     to:'/'
                 },
                 {
-                    title: 'Templates',
+                    title: 'New Template',
                     icon: 'mdi-file-document-plus-outline',
-                    to:'/templates'
+                    to:'/template-creation'
+                },
+                {
+                    title: 'Manage Templates',
+                    icon: 'mdi-file-document-edit-outline',
+                    to:'/template-management'
                 },
             ],
         };
