@@ -1,5 +1,5 @@
 <template>
-    <v-table density="compact">
+    <v-table rounded density="compact">
         <thead class="table-header">
             <tr>
                 <th class="text-left">

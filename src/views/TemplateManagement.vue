@@ -1,8 +1,7 @@
 <template>
     <div class="pa-6">
       <h1>Manage existing templates</h1>
-
-      <v-divider class="my-12"></v-divider>
+      <br>
       <TemplateList />
     </div>
   </template>

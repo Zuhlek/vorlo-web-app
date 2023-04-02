@@ -4,9 +4,9 @@
 */
 <template>
     <v-alert class="my-6" v-model="successAlert" closable type="success"
-        title="Successfully created new template" :text="successText"></v-alert>
+        title="Successfully created new template" :text="successText" @input="successAlert = false"></v-alert>
     <v-alert class="my-6" v-model="errorAlert" closable type="error"
-        title="Encountered an error when trying to create new template" :text="errorText"></v-alert>
+        title="Encountered an error when trying to create new template" :text="errorText" @input="errorAlert = false"></v-alert>
 
     <v-sheet rounded color="green-lighten-5">
         <v-form v-model="valid" class="pa-6" ref="createTemplateForm">
@@ -20,7 +20,6 @@
             <v-container class="d-flex justify-center">
                 <v-btn type="submit" variant="tonal" @click.prevent="submit" :disabled="!valid">Upload</v-btn>
             </v-container>
-
         </v-form>
     </v-sheet>
 </template>
@@ -67,11 +66,7 @@ export default {
                 formData.append('ownerId', 1);  //currently just 1, no user logic yet
                 formData.append('templateName', this.templateName);
                 formData.append('templateDescription', this.templateDescription);
-                axios.post(SERVER_API_URL_CREATE_TEMPLATE, formData, config, {
-                    onDownloadProgress: uploadEvent => {
-                        console.log('Upload Progress: ' + Math.round(uploadEvent.loaded / uploadEvent.total * 100) + "%")
-                    }
-                })
+                axios.post(SERVER_API_URL_CREATE_TEMPLATE, formData, config)
                     .then((res) => {
                         this.$refs.createTemplateForm.reset()
                         this.templateFile = null;
@@ -81,7 +76,7 @@ export default {
                         this.successAlert = true;
                     })
                     .catch((err) => {
-                        this.errorText = err;
+                        this.errorText = err.message;
                         this.errorAlert = true;
                     })
             }
