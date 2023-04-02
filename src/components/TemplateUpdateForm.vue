@@ -70,6 +70,10 @@ export default {
                         this.templateName = null;
                         this.templateDescription = null;
                     })
+                    .catch((error) => {
+                        console.error(error);
+                        this.errorAlert = true;
+                    });
             }
         }
     }

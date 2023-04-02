@@ -3,8 +3,13 @@
     https://www.youtube.com/watch?v=VqnJwh6E9ak&ab_channel=Academind
 */
 <template>
+    <v-alert class="my-6" v-model="successAlert" closable type="success"
+        title="Successfully created new template" :text="successText"></v-alert>
+    <v-alert class="my-6" v-model="errorAlert" closable type="error"
+        title="Encountered an error when trying to create new template" :text="errorText"></v-alert>
+
     <v-sheet rounded color="green-lighten-5">
-        <v-form v-model="valid" class="pa-6" ref="updateTemplateForm">
+        <v-form v-model="valid" class="pa-6" ref="createTemplateForm">
             <v-file-input label="Select template from files" variant="underlined"
                 accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 show-size :rules="fileRequired" @change="onFileSelected">
@@ -25,7 +30,7 @@ import axios from 'axios'
 
 const SERVER_API_URL_CREATE_TEMPLATE = 'http://localhost:8080/api/v1/templates/'
 export default {
-    name: 'template-update-form',
+    name: 'template-create-form',
 
     data() {
         return {
@@ -38,7 +43,11 @@ export default {
             valid: false, // initial value of form validation
             templateFile: null,
             templateName: null,
-            templateDescription: null
+            templateDescription: null,
+            errorText: null,
+            errorAlert: false,
+            successText: null,
+            successAlert: false
         }
     },
     methods: {
@@ -46,8 +55,8 @@ export default {
             this.templateFile = event.target.files[0] //currently only one template at a time, so [0] is ok
         },
         async submit() {
-            console.log(this.$refs.newTemplateForm)
-            if (this.$refs.newTemplateForm.validate()) { // check form validity before submitting
+            console.log(this.$refs.createTemplateForm)
+            if (this.$refs.createTemplateForm.validate()) { // check form validity before submitting
                 const formData = new FormData();
                 const config = {
                     headers: {
@@ -64,11 +73,16 @@ export default {
                     }
                 })
                     .then((res) => {
-                        console.log(res)
-                        this.$refs.newTemplateForm.reset()
+                        this.$refs.createTemplateForm.reset()
                         this.templateFile = null;
                         this.templateName = null;
                         this.templateDescription = null;
+                        this.successText = "[" + res.status + "]: " + res.statusText
+                        this.successAlert = true;
+                    })
+                    .catch((err) => {
+                        this.errorText = err;
+                        this.errorAlert = true;
                     })
             }
         }
