@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from './views/Home.vue';
-import TemplateCreation from './views/TemplateCreation.vue'
-import TemplateManagement from './views/TemplateManagement.vue'
+import Templates from './views/Templates.vue'
+import Projects from './views/Projects.vue'
 
 const routes = [
   {
@@ -10,14 +10,14 @@ const routes = [
     component: Home,
   },
   {
-    path: '/template-creation',
-    name: 'TemplateCreation',
-    component: TemplateCreation,
+    path: '/templates',
+    name: 'Templates',
+    component: Templates,
   },
   {
-    path: '/template-management',
-    name: 'TemplateManagement',
-    component: TemplateManagement,
+    path: '/projects',
+    name: 'Projects',
+    component: Projects,
   },
 ];
 

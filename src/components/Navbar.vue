@@ -44,12 +44,12 @@ export default {
                 {
                     title: 'New Template',
                     icon: 'mdi-file-document-plus-outline',
-                    to:'/template-creation'
+                    to:'/templates'
                 },
                 {
-                    title: 'Manage Templates',
-                    icon: 'mdi-file-document-edit-outline',
-                    to:'/template-management'
+                    title: 'New Project',
+                    icon: 'mdi-folder-plus-outline',
+                    to:'/projects'
                 },
             ],
         };
