@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import NavBar from './components/NavBar.vue';
-import AppBar from './components/AppBar.vue';
+import NavBar from './components/shared/NavBar.vue';
+import AppBar from './components/shared/AppBar.vue';
 
 export default {
   components: {

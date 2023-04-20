@@ -1,21 +1,23 @@
 <template>
   <div class="pa-6">
-    <div class="d-flex align-center">
-        <h2 >Templates</h2>
+    <div >
+      <v-sheet class="d-flex justify-space-around">
+        <v-label style="font-size: larger">Templates</v-label>
         <v-spacer></v-spacer>
-        <v-btn icon="mdi-plus" @click="createNewTemplate">  </v-btn>
-        <v-dialog v-model="createTemplateDialog" width="500" @click:outside="closeDialog" @keydown.esc="closeDialog">
-          <TemplateCreationForm  />
-        </v-dialog>
+        <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="createNewTemplate">+</v-chip>
+      </v-sheet>
     </div>
+      <v-dialog v-model="createTemplateDialog" width="500">
+        <TemplateCreationForm />
+      </v-dialog>
     <br>
     <TemplateList />
   </div>
 </template>
   
 <script>
-import TemplateCreationForm from '@/components/TemplateCreationForm.vue';
-import TemplateList from '@/components/TemplateList.vue';
+import TemplateCreationForm from '@/components/forms/TemplateCreationForm.vue';
+import TemplateList from '@/components/other/TemplateList.vue';
 
 export default {
   name: "templates-view",
@@ -23,17 +25,17 @@ export default {
     TemplateCreationForm,
     TemplateList
   },
-    data(){
-      return{
-        createTemplateDialog: false,
-      }
-    },
-    methods: {
-      createNewTemplate(){
-        console.log("hello")
-        this.createTemplateDialog = true;
-      }
+  data() {
+    return {
+      createTemplateDialog: false,
     }
+  },
+  methods: {
+    createNewTemplate() {
+      console.log("hello")
+      this.createTemplateDialog = true;
+    }
+  }
 };
 </script>
   

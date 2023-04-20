@@ -38,7 +38,7 @@
         </v-table>
         <br>
         <v-btn variant="tonal" @click="listUploadedTemplates">Load uploaded templates</v-btn>
-        <v-dialog v-model="updateTemplateDialog" width="500" @click:outside="closeDialog" @keydown.esc="closeDialog">
+        <v-dialog v-model="updateTemplateDialog" width="500">
             <template-update-form :template-id="selectedTemplateId" />
         </v-dialog>
     </div>
@@ -56,7 +56,7 @@
 
 <script>
 import axios from 'axios'
-import TemplateUpdateForm from './TemplateUpdateForm.vue';
+import TemplateUpdateForm from '../forms/TemplateUpdateForm.vue';
 
 export default {
     name: 'template-list',
@@ -67,7 +67,7 @@ export default {
         return {
             templates: null,
             updateTemplateDialog: false,
-            selectedTemplateId: -1
+            selectedProjectId: -1
         }
     },
     methods: {
@@ -81,12 +81,9 @@ export default {
                 });
         },
         editSelectedTemplate(templateId) {
-            if (templateId === -1) { return; }
-            this.selectedTemplateId = templateId;
-            this.updateTemplateDialog = true;
-        },
-        closeDialog() {
-            this.updateTemplateDialog = false;
+                if (templateId === -1) { return; }
+                this.selectedTemplateId = templateId;
+                this.updateTemplateDialog = true;
         },
         deleteSelectedTemplate(templateId) {
             axios.delete(`http://localhost:8080/api/v1/templates/${templateId}`)

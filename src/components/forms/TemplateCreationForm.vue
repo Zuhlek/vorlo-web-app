@@ -63,7 +63,8 @@ export default {
                     }
                 }
                 formData.append('file', this.templateFile, this.templateFile.name);
-                formData.append('ownerId', 1);  //currently just 1, no user logic yet
+                formData.append('vorloProjectId', 0); // 0 are real templates, otherwise they are linked to an actual project 
+                formData.append('vorloUserId', 1);  //currently just 1, no user logic yet
                 formData.append('templateName', this.templateName);
                 formData.append('templateDescription', this.templateDescription);
                 axios.post(SERVER_API_URL_CREATE_TEMPLATE, formData, config)

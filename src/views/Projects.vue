@@ -1,30 +1,40 @@
 <template>
-    <div class="pa-6">
-      <v-card>Create new project
-        <template v-slot:append>
-            <v-btn icon>
-                <v-icon>mdi-help</v-icon>
-            </v-btn>
-        </template>
-      </v-card>
-      <br>
+  <div class="pa-6">
+    <v-sheet class="d-flex justify-space-around">
+      <v-label style="font-size: larger">Projects</v-label>
+      <v-spacer></v-spacer>
+      <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="createNewProject">+</v-chip>
+    </v-sheet>
 
-    </div>
-  </template>
-    
-  <script>
-
+    <v-dialog v-model="createProjectDialog" width="500" >
+      <ProjectCreationForm />
+    </v-dialog>
+    <br>
+    <ProjectList />
+  </div>
+</template>
   
-  export default {
-    name: "project-view",
-    components: {
+  
+<script>
+import ProjectList from '@/components/other/ProjectList.vue';
+import ProjectCreationForm from '@/components/forms/ProjectCreationForm.vue';
 
-    },
-    data(){
-      return{
-        updateTemplateDialog: false,
-      }
+export default {
+  name: "project-view",
+  components: {
+    ProjectList,
+    ProjectCreationForm,
+  },
+  data() {
+    return {
+      createProjectDialog: false,
     }
-  };
-  </script>
+  },
+  methods: {
+    createNewProject() {
+      this.createProjectDialog = true;
+    }
+  }
+};
+</script>
     
