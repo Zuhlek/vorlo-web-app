@@ -92,11 +92,7 @@ export default {
                 if (this.templateDescription) {
                     formData.append('templateDescription', this.templateDescription);
                 }
-                axios.put(`${SERVER_API_BASE_URL_UPDATE_TEMPLATE}${this.templateId}`, formData, config, {
-                    onDownloadProgress: uploadEvent => {
-                        console.log('Upload Progress: ' + Math.round(uploadEvent.loaded / uploadEvent.total * 100) + "%")
-                    }
-                })
+                axios.put(`${SERVER_API_BASE_URL_UPDATE_TEMPLATE}${this.templateId}`, formData, config)
                     .then((res) => {
                         console.log(res)
                         this.$refs.updateTemplateForm.reset()

@@ -32,7 +32,6 @@ export default {
   },
   methods: {
     createNewTemplate() {
-      console.log("hello")
       this.createTemplateDialog = true;
     }
   }

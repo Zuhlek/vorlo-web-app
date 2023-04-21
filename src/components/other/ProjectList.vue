@@ -23,6 +23,9 @@
                     <td>{{ item.name }}</td>
                     <td>{{ item.template ? item.template.name : 'N/A' }}</td>
                     <td>
+                        <v-btn to="/details" icon variant="plain" @click="openProjectDetails(item.id)">
+                            <v-icon>mdi-launch</v-icon>
+                        </v-btn>
                         <v-btn icon variant="plain" @click="editSelectedProject(item.id)">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
@@ -79,8 +82,11 @@ export default {
                     console.error('Error fetching projects:', error);
                 });
         },
+        openProjectDetails(projectId){
+            this.$store.state.selectedProjectId = projectId;
+            this.$store.state.projectWasSelected = true;
+        },
         editSelectedProject(projectId) {
-            console.log('Selected project ID:', projectId);
             if (projectId === -1) { 
                 return; 
             }
@@ -89,9 +95,8 @@ export default {
         },
         deleteSelectedProject(projectId) {
             axios.delete(`http://localhost:8080/api/v1/projects/${projectId}`)
-                .then((res) => {
+                .then(() => {
                     this.listUploadedProjects();
-                    console.log(res);
                 })
                 .catch((error) => {
                     console.error('Error deleting projects:', error);
