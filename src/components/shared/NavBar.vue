@@ -42,14 +42,19 @@ export default {
                     to:'/'
                 },
                 {
-                    title: 'New Template',
+                    title: 'Templates',
                     icon: 'mdi-file-document-plus-outline',
                     to:'/templates'
                 },
                 {
-                    title: 'New Project',
+                    title: 'Projects',
                     icon: 'mdi-folder-plus-outline',
                     to:'/projects'
+                },
+                {
+                    title: 'Details',
+                    icon: 'mdi-launch',
+                    to:'/details'
                 },
             ],
         };
