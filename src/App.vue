@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app>
     <NavBar />
     <AppBar />
     <v-main>
@@ -12,10 +12,12 @@
 import NavBar from './components/shared/NavBar.vue';
 import AppBar from './components/shared/AppBar.vue';
 
+
+
 export default {
   components: {
     AppBar,
-    NavBar
+    NavBar,
   }
 }
 </script>

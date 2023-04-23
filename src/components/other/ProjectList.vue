@@ -23,7 +23,7 @@
                     <td>{{ item.name }}</td>
                     <td>{{ item.template ? item.template.name : 'N/A' }}</td>
                     <td>
-                        <v-btn to="/details" icon variant="plain" @click="openProjectDetails(item.id)">
+                        <v-btn icon variant="plain" @click="openProjectDetails(item.id)">
                             <v-icon>mdi-launch</v-icon>
                         </v-btn>
                         <v-btn icon variant="plain" @click="editSelectedProject(item.id)">
@@ -38,7 +38,7 @@
             </tbody>
         </v-table>
         <br>
-        <v-btn variant="tonal" @click="listUploadedProjects">Load projects</v-btn>
+
         <v-dialog v-model="updateProjectDialog" width="500">
             <project-update-form :project-id="selectedProjectId" />
         </v-dialog>
@@ -72,6 +72,9 @@ export default {
             selectedProjectId: -1
         }
     },
+    mounted() {
+        this.listUploadedProjects()
+    },
     methods: {
         listUploadedProjects() {
             axios.get('http://localhost:8080/api/v1/projects/')
@@ -82,9 +85,21 @@ export default {
                     console.error('Error fetching projects:', error);
                 });
         },
-        openProjectDetails(projectId){
-            this.$store.state.selectedProjectId = projectId;
-            this.$store.state.projectWasSelected = true;
+        async openProjectDetails(projectId){
+
+            if(projectId == null) return;
+
+            await axios.get(`http://localhost:8080/api/v1/projects/${projectId}`)
+                .then((res) => {
+                    this.$store.state.selectedProject = res.data.data.project
+                    this.$store.state.selectedProjectId = projectId;
+                    this.$store.state.projectWasSelected = true;
+                })
+                .catch((error) => {
+                    console.error('Error fetching projects:', error);
+                });
+
+            this.$router.push("/details");
         },
         editSelectedProject(projectId) {
             if (projectId === -1) { 

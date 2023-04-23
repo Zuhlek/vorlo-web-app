@@ -37,7 +37,7 @@
             </tbody>
         </v-table>
         <br>
-        <v-btn variant="tonal" @click="listUploadedTemplates">Load uploaded templates</v-btn>
+
         <v-dialog v-model="updateTemplateDialog" width="500">
             <template-update-form :template-id="selectedTemplateId" />
         </v-dialog>
@@ -69,6 +69,9 @@ export default {
             updateTemplateDialog: false,
             selectedProjectId: -1
         }
+    },
+    mounted() {
+        this.listUploadedTemplates()
     },
     methods: {
         listUploadedTemplates() {

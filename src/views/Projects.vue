@@ -11,6 +11,7 @@
     </v-dialog>
     <br>
     <ProjectList />
+
   </div>
 </template>
   

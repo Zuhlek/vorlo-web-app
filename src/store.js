@@ -3,6 +3,7 @@ import { createStore } from "vuex";
 const store = createStore({
     state: {
       selectedProjectId: null,
+      selectedProject: null,
       projectWasSelected: false,
     },
     mutations: {
