@@ -3,7 +3,8 @@
     <v-sheet class="d-flex justify-space-around">
       <v-label style="font-size: larger">Projects</v-label>
       <v-spacer></v-spacer>
-      <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="createNewProject">+</v-chip>
+      <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="createNewProject">
+      <v-icon>mdi-plus</v-icon></v-chip>
     </v-sheet>
 
     <v-dialog v-model="createProjectDialog" width="500" >

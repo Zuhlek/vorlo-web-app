@@ -51,11 +51,6 @@ export default {
                     icon: 'mdi-folder-plus-outline',
                     to:'/projects'
                 },
-                {
-                    title: 'Details',
-                    icon: 'mdi-launch',
-                    to:'/details'
-                },
             ],
         };
     },

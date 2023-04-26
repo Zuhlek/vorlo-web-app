@@ -9,25 +9,31 @@
     <!-- DETAIL PANE als header bar, buttons für actions  -->
 
     <v-sheet class="d-flex justify-space-around">
-      <v-label style="font-size: larger">Details for project </v-label>
+      <v-label class="text-h5">
+        #{{ this.$store.state.selectedProjectId }} |
+        {{ this.$store.state.selectedProject.name }} </v-label>
       <v-spacer></v-spacer>
-      <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="getTemplateDoc()">load preview</v-chip>
+      <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="updateContentMap()"
+        v-if="changesHappened">
+        <v-icon>mdi-content-save</v-icon>
+      </v-chip>
+      <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="createAndDownloadTemplate()">
+        <v-icon>mdi-download</v-icon>
+      </v-chip>
     </v-sheet>
-    <br>
     <v-sheet rounded color="green-lighten-5" class="d-flex justify-space-around">
     </v-sheet>
     <br>
-    <splitpanes class="default-theme" vertical>
+    <Splitpanes class="default-theme" vertical>
       <pane min-size="20" max-size="70">
-        <DynamicContentMap />
+        <DynamicContentMap @content-map-changed="onContentMapChanged" />
       </pane>
       <pane>
         <div ref="docxContainer"></div>
       </pane>
-    </splitpanes>
+    </Splitpanes>
   </div>
 </template>
-
 
 <script>
 //https://antoniandre.github.io/splitpanes/
@@ -37,6 +43,7 @@ import * as docx from 'docx-preview';
 import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
 const SERVER_API_URL_CREATE_TEMPLATE = 'http://localhost:8080/api/v1/templates/'
+const SERVER_API_URL_CREATE_PROJECT = 'http://localhost:8080/api/v1/projects/'
 
 export default {
   name: "detail-view",
@@ -45,9 +52,17 @@ export default {
     Splitpanes,
     Pane,
   },
+  data() {
+    return {
+      changesHappened: false,
+      updatedContentMap: null,
+    }
+
+  },
   mounted() {
     if (this.$store.state.projectWasSelected) {
       this.getTemplateDoc();
+      console.log(this.changesHappened)
     }
   },
   unmounted() {
@@ -76,7 +91,49 @@ export default {
         })
         .catch(() => {
         })
+    },
+    onContentMapChanged(updatedKeyValuePairs) {
+      this.changesHappened = true;
+      this.updatedContentMap = updatedKeyValuePairs.reduce((map, item) => {
+        map[item.key] = item.value;
+        return map;
+      }, {});
+    },
+    updateContentMap() {
+      if (!this.updatedContentMap) return;
+
+      axios.put(`${SERVER_API_URL_CREATE_TEMPLATE}${this.$store.state.selectedProject.template.id}/content-map`, this.updatedContentMap)
+        .then((res) => {
+          console.log(res)
+          this.changesHappened = false;
+        })
+        .catch((error) => {
+          console.error(error);
+          this.errorAlert = true;
+        });
+    },
+    createAndDownloadTemplate() {
+      axios.get(`${SERVER_API_URL_CREATE_PROJECT}${this.$store.state.selectedProjectId}/generate-document`, {
+        responseType: "blob",
+      })
+        .then((res) => {
+          console.log(res);
+          const url = window.URL.createObjectURL(new Blob([res.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          const fileName = res.headers["content-disposition"].match(/filename="(.+)"/)[1];
+          link.setAttribute("download", fileName);
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          this.changesHappened = false;
+        })
+        .catch((error) => {
+          console.error(error);
+          this.errorAlert = true;
+        });
     }
+
 
   },
 };
