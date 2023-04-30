@@ -1,5 +1,6 @@
 <template>
     <div>
+
         <v-table density="compact">
             <thead class="table-header">
                 <tr>
@@ -13,8 +14,8 @@
             </thead>
             <tbody>
                 <tr v-for="item in keyValuePairs" :key="item.key" class="table-row">
-                    <td>{{ item.key }}</td>
-                    <td>
+                    <td >{{ item.key }}</td>
+                    <td style="width: 100%;">
                         <v-text-field variant="underlined" v-model="item.value" @focus="storeOriginalValue(item.value)"
                             @blur="reportChange(item.value)"></v-text-field>
 

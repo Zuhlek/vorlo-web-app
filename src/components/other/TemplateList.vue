@@ -114,7 +114,7 @@ export default {
                             fileName = fileNameMatch[1];
                         }
                     }
-                    link.setAttribute('download', fileName); // Hier können Sie den Dateinamen entsprechend dem heruntergeladenen Template anpassen.
+                    link.setAttribute('download', fileName); 
                     document.body.appendChild(link);
                     link.click();
                     link.parentNode.removeChild(link);
