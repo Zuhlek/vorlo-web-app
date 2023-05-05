@@ -75,7 +75,7 @@ export default {
     },
     methods: {
         listUploadedTemplates() {
-            axios.get('http://localhost:8080/api/v1/templates/')
+            axios.get('https://vorlo-api-app.onrender.com/api/v1/templates/')
                 .then((res) => {
                     this.templates = res.data.data.templates;
                 })
@@ -89,7 +89,7 @@ export default {
                 this.updateTemplateDialog = true;
         },
         deleteSelectedTemplate(templateId) {
-            axios.delete(`http://localhost:8080/api/v1/templates/${templateId}`)
+            axios.delete(`https://vorlo-api-app.onrender.com/api/v1/templates/${templateId}`)
                 .then((res) => {
                     this.listUploadedTemplates();
                     console.log(res);
@@ -99,7 +99,7 @@ export default {
                 });
         },
         downloadSelectedTemplateAsFile(templateId) {
-            axios.get(`http://localhost:8080/api/v1/templates/${templateId}/download-file`, { responseType: 'blob' })
+            axios.get(`https://vorlo-api-app.onrender.com/api/v1/templates/${templateId}/download-file`, { responseType: 'blob' })
                 .then((res) => {
                     console.log(res)
                     const url = window.URL.createObjectURL(new Blob([res.data]));

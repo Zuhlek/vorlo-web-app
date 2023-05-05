@@ -42,8 +42,8 @@ import axios from 'axios'
 import * as docx from 'docx-preview';
 import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
-const SERVER_API_URL_CREATE_TEMPLATE = 'http://localhost:8080/api/v1/templates/'
-const SERVER_API_URL_CREATE_PROJECT = 'http://localhost:8080/api/v1/projects/'
+const SERVER_API_URL_CREATE_TEMPLATE = 'https://vorlo-api-app.onrender.com/api/v1/templates/'
+const SERVER_API_URL_CREATE_PROJECT = 'https://vorlo-api-app.onrender.com/api/v1/projects/'
 
 export default {
   name: "detail-view",

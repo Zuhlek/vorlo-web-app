@@ -29,7 +29,7 @@
 <script>
 import axios from 'axios'
 
-const SERVER_API_BASE_URL_UPDATE_TEMPLATE = 'http://localhost:8080/api/v1/templates/'
+const SERVER_API_BASE_URL_UPDATE_TEMPLATE = 'https://vorlo-api-app.onrender.com/api/v1/templates/'
 export default {
     name: 'template-update-form',
     props: {

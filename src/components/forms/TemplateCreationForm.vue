@@ -27,7 +27,7 @@
 <script>
 import axios from 'axios'
 
-const SERVER_API_URL_CREATE_TEMPLATE = 'http://localhost:8080/api/v1/templates/'
+const SERVER_API_URL_CREATE_TEMPLATE = 'https://vorlo-api-app.onrender.com/api/v1/templates/'
 export default {
     name: 'template-create-form',
 

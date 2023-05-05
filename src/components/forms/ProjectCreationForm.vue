@@ -20,7 +20,7 @@
 <script>
 import axios from 'axios'
 
-const SERVER_API_URL_CREATE_PROJECT = 'http://localhost:8080/api/v1/projects/'
+const SERVER_API_URL_CREATE_PROJECT = 'https://vorlo-api-app.onrender.com/api/v1/projects/'
 export default {
     name: 'project-create-form',
 
@@ -67,7 +67,7 @@ export default {
             }
         },
         listUploadedTemplates() {
-            axios.get('http://localhost:8080/api/v1/templates/')
+            axios.get('https://vorlo-api-app.onrender.com/api/v1/templates/')
                 .then((res) => {
                     this.templates = res.data.data.templates;
                 })
