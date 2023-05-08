@@ -30,7 +30,6 @@
 <script>
 import axios from 'axios'
 
-const SERVER_API_URL_CREATE_PROJECT = 'http://localhost:8080/api/v1/projects/'
 export default {
     name: 'project-update-form',
     props: {
@@ -57,7 +56,7 @@ export default {
     },
     async mounted() {
         try {
-            const response = await axios.get(`${SERVER_API_URL_CREATE_PROJECT}${this.projectId}`);
+            const response = await axios.get(`${this.$store.config.BACKEND_ENDPOINT_URL_PROJECTS}${this.projectId}`);
             const projectData = response.data.data.projects;
             this.projectName = projectData.name;
             this.projectTemplateName = projectData.template.name;
@@ -81,7 +80,7 @@ export default {
                 formData.append('vorloUserId', 1);  //currently just 1, no user logic yet
                 formData.append('projectName', this.projectName);
                 formData.append('templateId', this.selectedTemplate.id);
-                axios.put(SERVER_API_URL_CREATE_PROJECT, formData)
+                axios.put(this.$store.config.BACKEND_ENDPOINT_URL_PROJECTS, formData)
                     .then((res) => {
                         this.$refs.createProjectForm.reset()
                         this.projectName = null;
@@ -96,7 +95,7 @@ export default {
             } 
         },
         listUploadedTemplates() {
-            axios.get('http://localhost:8080/api/v1/templates/')
+            axios.get(this.$store.config.BACKEND_ENDPOINT_URL_TEMPLATES)
                 .then((res) => {
                     console.log(res)
                     this.templates = res.data.data.templates;

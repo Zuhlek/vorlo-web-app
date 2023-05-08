@@ -9,7 +9,7 @@
       </v-sheet>
     </div>
       <v-dialog v-model="createTemplateDialog" width="500">
-        <TemplateCreationForm />
+        <TemplateCreationForm @close-dialog="createTemplateDialog = false"/>
       </v-dialog>
     <br>
     <TemplateList />

@@ -77,7 +77,7 @@ export default {
     },
     methods: {
         listUploadedProjects() {
-            axios.get('http://localhost:8080/api/v1/projects/')
+            axios.get(this.$store.config.BACKEND_ENDPOINT_URL_PROJECTS)
                 .then((res) => {
                     this.projects = res.data.data.projects;
                 })
@@ -89,7 +89,7 @@ export default {
 
             if(projectId == null) return;
 
-            await axios.get(`http://localhost:8080/api/v1/projects/${projectId}`)
+            await axios.get(`${this.$store.config.BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`)
                 .then((res) => {
                     this.$store.state.selectedProject = res.data.data.project
                     this.$store.state.selectedProjectId = projectId;
@@ -109,7 +109,7 @@ export default {
             this.updateProjectDialog = true;
         },
         deleteSelectedProject(projectId) {
-            axios.delete(`http://localhost:8080/api/v1/projects/${projectId}`)
+            axios.delete(`${this.$store.config.BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`)
                 .then(() => {
                     this.listUploadedProjects();
                 })

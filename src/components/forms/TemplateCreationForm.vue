@@ -3,12 +3,13 @@
     https://www.youtube.com/watch?v=VqnJwh6E9ak&ab_channel=Academind
 */
 <template>
-    <v-alert class="my-6" v-model="successAlert" closable type="success"
-        title="Successfully created new template" :text="successText" @input="successAlert = false"></v-alert>
+    <v-alert class="my-6" v-model="successAlert" closable type="success" title="Successfully created new template"
+    @click:close="closeWholeDialog"></v-alert>
     <v-alert class="my-6" v-model="errorAlert" closable type="error"
-        title="Encountered an error when trying to create new template" :text="errorText" @input="errorAlert = false"></v-alert>
+        title="Encountered an error when trying to create new template" @click:close="closeWholeDialog"></v-alert>
 
-    <v-sheet rounded color="green-lighten-5">
+
+    <v-sheet v-if="showForm" rounded color="green-lighten-5">
         <v-form v-model="valid" class="pa-6" ref="createTemplateForm">
             <v-file-input label="Select template from files" variant="underlined"
                 accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -25,12 +26,11 @@
 </template>
 
 <script>
-import axios from 'axios'
 
-const SERVER_API_URL_CREATE_TEMPLATE = 'http://localhost:8080/api/v1/templates/'
+import { mapActions } from 'vuex';
 export default {
     name: 'template-create-form',
-
+    emits: ['close-dialog'],
     data() {
         return {
             valueRequired: [
@@ -40,48 +40,43 @@ export default {
                 file => !!file[0] || 'File is required' //currently only one template at a time, so [0] is ok
             ],
             valid: false, // initial value of form validation
+            showForm: true,
             templateFile: null,
             templateName: null,
             templateDescription: null,
-            errorText: null,
             errorAlert: false,
-            successText: null,
             successAlert: false
         }
     },
     methods: {
+        ...mapActions(['createTemplate']),
         onFileSelected(event) {
-            this.templateFile = event.target.files[0] //currently only one template at a time, so [0] is ok
+            this.templateFile = event.target.files[0]
         },
         async submit() {
-            console.log(this.$refs.createTemplateForm)
-            if (this.$refs.createTemplateForm.validate()) { // check form validity before submitting
-                const formData = new FormData();
-                const config = {
-                    headers: {
-                        'content-type': 'multipart/form-data'
-                    }
+            if (this.$refs.createTemplateForm.validate()) {
+                try {
+                    await this.createTemplate({
+                        templateFile: this.templateFile,
+                        templateName: this.templateName,
+                        templateDescription: this.templateDescription,
+                    })
+                    this.$refs.createTemplateForm.reset();
+                    this.templateFile = null;
+                    this.templateName = null;
+                    this.templateDescription = null;
+                    this.successAlert = true;
+                    this.showForm = false;
+                } catch (error) {
+                    this.errorAlert = true;
                 }
-                formData.append('file', this.templateFile, this.templateFile.name);
-                formData.append('vorloProjectId', 0); // 0 are real templates, otherwise they are linked to an actual project 
-                formData.append('vorloUserId', 1);  //currently just 1, no user logic yet
-                formData.append('templateName', this.templateName);
-                formData.append('templateDescription', this.templateDescription);
-                axios.post(SERVER_API_URL_CREATE_TEMPLATE, formData, config)
-                    .then((res) => {
-                        this.$refs.createTemplateForm.reset()
-                        this.templateFile = null;
-                        this.templateName = null;
-                        this.templateDescription = null;
-                        this.successText = "[" + res.status + "]: " + res.statusText
-                        this.successAlert = true;
-                    })
-                    .catch((err) => {
-                        this.errorText = err.message;
-                        this.errorAlert = true;
-                    })
             }
-        }
+        },
+        closeWholeDialog() {
+            this.successAlert = false;
+            this.errorAlert = false;
+            this.$emit('close-dialog');
+        },
     }
 }
 </script>

@@ -20,7 +20,6 @@
 <script>
 import axios from 'axios'
 
-const SERVER_API_URL_CREATE_PROJECT = 'http://localhost:8080/api/v1/projects/'
 export default {
     name: 'project-create-form',
 
@@ -52,7 +51,7 @@ export default {
                 formData.append('vorloUserId', 1);  //currently just 1, no user logic yet
                 formData.append('projectName', this.projectName);
                 formData.append('templateId', this.selectedItem.id);
-                axios.post(SERVER_API_URL_CREATE_PROJECT, formData)
+                axios.post(this.$store.config.BACKEND_ENDPOINT_URL_PROJECTS, formData)
                     .then((res) => {
                         this.$refs.createProjectForm.reset()
                         this.projectName = null;
@@ -67,7 +66,7 @@ export default {
             }
         },
         listUploadedTemplates() {
-            axios.get('http://localhost:8080/api/v1/templates/')
+            axios.get(this.$store.config.BACKEND_ENDPOINT_URL_TEMPLATES)
                 .then((res) => {
                     this.templates = res.data.data.templates;
                 })
