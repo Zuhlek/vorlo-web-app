@@ -30,9 +30,6 @@
 <script>
 import axios from 'axios'
 
-
-const SERVER_API_URL_CREATE_PROJECT = 'https://vorlo-api-app.onrender.com/api/v1/projects/'
-
 export default {
     name: 'project-update-form',
     props: {

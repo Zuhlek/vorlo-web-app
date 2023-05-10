@@ -24,9 +24,6 @@
 <script>
 import { mapActions } from 'vuex';
 
-
-const SERVER_API_BASE_URL_UPDATE_TEMPLATE = 'https://vorlo-api-app.onrender.com/api/v1/templates/'
-
 export default {
     name: 'template-update-form',
     props: {
