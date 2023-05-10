@@ -77,7 +77,9 @@ export default {
     },
     methods: {
         listUploadedProjects() {
-            axios.get(this.$store.config.BACKEND_ENDPOINT_URL_PROJECTS)
+
+            axios.get('https://vorlo-api-app.onrender.com/api/v1/projects/')
+
                 .then((res) => {
                     this.projects = res.data.data.projects;
                 })
@@ -89,7 +91,9 @@ export default {
 
             if(projectId == null) return;
 
-            await axios.get(`${this.$store.config.BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`)
+
+            await axios.get(`https://vorlo-api-app.onrender.com/api/v1/projects/${projectId}`)
+
                 .then((res) => {
                     this.$store.state.selectedProject = res.data.data.project
                     this.$store.state.selectedProjectId = projectId;

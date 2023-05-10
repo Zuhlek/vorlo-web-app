@@ -77,6 +77,7 @@ export default {
     },
 
     methods: {
+
         ...mapActions(['fetchTemplates', 'deleteTemplate', 'downloadTemplate']),
 
         editSelectedTemplate(templateId) {
@@ -92,6 +93,7 @@ export default {
                 const url = window.URL.createObjectURL(new Blob([data]));
                 const link = document.createElement('a');
                 link.href = url;
+
 
                 const contentDisposition = headers['content-disposition'];
                 let fileName = 'unknown';

@@ -30,6 +30,9 @@
 <script>
 import axios from 'axios'
 
+
+const SERVER_API_URL_CREATE_PROJECT = 'https://vorlo-api-app.onrender.com/api/v1/projects/'
+
 export default {
     name: 'project-update-form',
     props: {
@@ -95,7 +98,9 @@ export default {
             } 
         },
         listUploadedTemplates() {
-            axios.get(this.$store.config.BACKEND_ENDPOINT_URL_TEMPLATES)
+
+            axios.get('https://vorlo-api-app.onrender.com/api/v1/templates/')
+
                 .then((res) => {
                     console.log(res)
                     this.templates = res.data.data.templates;
