@@ -26,10 +26,10 @@
                         <v-btn icon variant="plain" @click="editSelectedTemplate(item.id)">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
-                        <v-btn icon variant="plain" @click="deleteSelectedTemplate(item.id)">
+                        <v-btn icon variant="plain" @click="deleteTemplate(item.id)">
                             <v-icon>mdi-trash-can-outline</v-icon>
                         </v-btn>
-                        <v-btn icon variant="plain" @click="downloadSelectedTemplateAsFile(item.id)">
+                        <v-btn icon variant="plain" @click="downloadTemplate(item.id)">
                             <v-icon>mdi-download</v-icon>
                         </v-btn>
                     </td>
@@ -55,74 +55,60 @@
 </style>
 
 <script>
-import axios from 'axios'
 import TemplateUpdateForm from '../forms/TemplateUpdateForm.vue';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'template-list',
     components: {
-        TemplateUpdateForm
+        TemplateUpdateForm,
     },
     data() {
         return {
-            templates: null,
             updateTemplateDialog: false,
             selectedProjectId: -1
         }
     },
-    mounted() {
-        this.listUploadedTemplates()
+    computed: {
+        ...mapGetters(['templates', 'downloadedTemplate']),
     },
-    methods: {
-        listUploadedTemplates() {
-            axios.get('https://vorlo-api-app.onrender.com/api/v1/templates/')
-                .then((res) => {
-                    this.templates = res.data.data.templates;
-                })
-                .catch((error) => {
-                    console.error('Error fetching templates:', error);
-                });
-        },
-        editSelectedTemplate(templateId) {
-                if (templateId === -1) { return; }
-                this.selectedTemplateId = templateId;
-                this.updateTemplateDialog = true;
-        },
-        deleteSelectedTemplate(templateId) {
-            axios.delete(`https://vorlo-api-app.onrender.com/api/v1/templates/${templateId}`)
-                .then((res) => {
-                    this.listUploadedTemplates();
-                    console.log(res);
-                })
-                .catch((error) => {
-                    console.error('Error deleting templates:', error);
-                });
-        },
-        downloadSelectedTemplateAsFile(templateId) {
-            axios.get(`https://vorlo-api-app.onrender.com/api/v1/templates/${templateId}/download-file`, { responseType: 'blob' })
-                .then((res) => {
-                    console.log(res)
-                    const url = window.URL.createObjectURL(new Blob([res.data]));
-                    const link = document.createElement('a');
-                    link.href = url;
+    mounted() {
+        this.fetchTemplates();
+    },
 
-                    const contentDisposition = res.headers['content-disposition'];
-                    let fileName = 'unknown';
-                    if (contentDisposition) {
-                        const fileNameMatch = contentDisposition.match(/filename="([^"]+)/);
-                        if (fileNameMatch && fileNameMatch.length > 1) {
-                            fileName = fileNameMatch[1];
-                        }
+    methods: {
+
+        ...mapActions(['fetchTemplates', 'deleteTemplate', 'downloadTemplate']),
+
+        editSelectedTemplate(templateId) {
+            if (templateId === -1) { return; }
+            this.selectedTemplateId = templateId;
+            this.updateTemplateDialog = true;
+        },
+    },
+    watch: {
+        downloadedTemplate(newValue) {
+            if (newValue) {
+                const { data, headers } = newValue;
+                const url = window.URL.createObjectURL(new Blob([data]));
+                const link = document.createElement('a');
+                link.href = url;
+
+
+                const contentDisposition = headers['content-disposition'];
+                let fileName = 'unknown';
+                if (contentDisposition) {
+                    const fileNameMatch = contentDisposition.match(/filename="([^"]+)/);
+                    if (fileNameMatch && fileNameMatch.length > 1) {
+                        fileName = fileNameMatch[1];
                     }
-                    link.setAttribute('download', fileName); 
-                    document.body.appendChild(link);
-                    link.click();
-                    link.parentNode.removeChild(link);
-                })
-                .catch((error) => {
-                    console.error('Error fetching templates:', error);
-                });
-        }
-    }
+                }
+                link.setAttribute('download', fileName);
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode.removeChild(link);
+            }
+        },
+    },
 }
 </script>

@@ -42,6 +42,7 @@ import axios from 'axios'
 import * as docx from 'docx-preview';
 import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
+
 const SERVER_API_URL_CREATE_TEMPLATE = 'https://vorlo-api-app.onrender.com/api/v1/templates/'
 const SERVER_API_URL_CREATE_PROJECT = 'https://vorlo-api-app.onrender.com/api/v1/projects/'
 
@@ -72,7 +73,7 @@ export default {
   },
   methods: {
     async getTemplateDoc() {
-      axios.get(`${SERVER_API_URL_CREATE_TEMPLATE}${this.$store.state.selectedProject.template.id}/download-file`, {
+      axios.get(`${this.$store.config.BACKEND_ENDPOINT_URL_TEMPLATES}${this.$store.state.selectedProject.template.id}/download-file`, {
         responseType: 'arraybuffer'
       })
         .then((res) => {
@@ -102,7 +103,7 @@ export default {
     updateContentMap() {
       if (!this.updatedContentMap) return;
 
-      axios.put(`${SERVER_API_URL_CREATE_TEMPLATE}${this.$store.state.selectedProject.template.id}/content-map`, this.updatedContentMap)
+      axios.put(`${this.$store.config.BACKEND_ENDPOINT_URL_TEMPLATES}${this.$store.state.selectedProject.template.id}/content-map`, this.updatedContentMap)
         .then((res) => {
           console.log(res)
           this.changesHappened = false;
@@ -113,7 +114,7 @@ export default {
         });
     },
     createAndDownloadTemplate() {
-      axios.get(`${SERVER_API_URL_CREATE_PROJECT}${this.$store.state.selectedProjectId}/generate-document`, {
+      axios.get(`${this.$store.config.BACKEND_ENDPOINT_URL_PROJECTS}${this.$store.state.selectedProjectId}/generate-document`, {
         responseType: "blob",
       })
         .then((res) => {

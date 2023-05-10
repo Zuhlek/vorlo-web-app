@@ -10,16 +10,11 @@
                 accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 show-size @change="onFileSelected" :placeholder="templateFileName">
             </v-file-input>
-            <v-text-field 
-                label="Template description" 
-                variant="underlined" 
-                v-model="templateDescription"
+            <v-text-field label="Template description" variant="underlined" v-model="templateDescription"
                 :placeholder="templateDescription" />
             <v-text-field label="Template name" variant="underlined" v-model="templateName" :placeholder="templateName" />
             <v-container class="d-flex justify-center">
-                <v-btn 
-                    variant="tonal" 
-                    @click.prevent="submit">Update
+                <v-btn variant="tonal" @click.prevent="submit">Update
                 </v-btn>
             </v-container>
         </v-form>
@@ -27,9 +22,11 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { mapActions } from 'vuex';
+
 
 const SERVER_API_BASE_URL_UPDATE_TEMPLATE = 'https://vorlo-api-app.onrender.com/api/v1/templates/'
+
 export default {
     name: 'template-update-form',
     props: {
@@ -53,59 +50,45 @@ export default {
     },
     async mounted() {
         try {
-            const response = await axios.get(`${SERVER_API_BASE_URL_UPDATE_TEMPLATE}${this.templateId}`);
-            const templateData = response.data.data.templates;
+            const templateData = await this.getTemplate(this.templateId);
             this.templateName = templateData.name;
             this.templateDescription = templateData.description;
-            this.templateFileName = templateData.filePath.split("/")[1]; //nicht so schön, im auge behalten
+            this.templateFileName = templateData.filePath.split("/")[1];
         } catch (error) {
             console.error('Error fetching template metadata:', error);
         }
     },
     methods: {
-
+        ...mapActions(['updateTemplate', 'getTemplate']),
         onFileSelected(event) {
-            this.templateFile = event.target.files[0] //currently only one template at a time, so [0] is ok
+            this.templateFile = event.target.files[0];
         },
         async submit() {
             if (!this.templateFile && !this.templateName && !this.templateDescription) {
                 console.warn('Mindestens eines der Felder muss einen Wert haben.');
                 return;
             }
-            if (this.$refs.updateTemplateForm.validate()) { // check form validity before submitting
-                const formData = new FormData();
-                const config = {
-                    headers: {
-                        'content-type': 'multipart/form-data'
-                    }
-                }
-
-                formData.append('templateId', this.templateId); 
-                formData.append('vorloProjectId', this.templateId); 
-                formData.append('vorloUserId', 1);  //currently just 1, no user logic yet
-                if (this.templateFile) {
-                    formData.append('file', this.templateFile, this.templateFile.name);
-                }
-                if (this.templateName) {
-                    formData.append('templateName', this.templateName);
-                }
-                if (this.templateDescription) {
-                    formData.append('templateDescription', this.templateDescription);
-                }
-                axios.put(`${SERVER_API_BASE_URL_UPDATE_TEMPLATE}${this.templateId}`, formData, config)
-                    .then((res) => {
-                        console.log(res)
-                        this.$refs.updateTemplateForm.reset()
-                        this.templateFile = null;
-                        this.templateName = null;
-                        this.templateDescription = null;
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        this.errorAlert = true;
+            if (this.$refs.updateTemplateForm.validate()) {
+                try {
+                    await this.updateTemplate({
+                        templateId: this.templateId,
+                        templateFile: this.templateFile,
+                        templateName: this.templateName,
+                        templateDescription: this.templateDescription,
                     });
+
+                    this.$refs.updateTemplateForm.reset();
+                    this.templateFile = null;
+                    this.templateName = null;
+                    this.templateDescription = null;
+                    this.successText = 'Template erfolgreich aktualisiert';
+                    this.successAlert = true;
+                } catch (error) {
+                    this.errorText = error.message;
+                    this.errorAlert = true;
+                }
             }
-        }
-    }
+        },
+    },
 }
 </script>
