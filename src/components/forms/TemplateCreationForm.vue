@@ -30,8 +30,6 @@
 
 import { mapActions } from 'vuex';
 
-const SERVER_API_URL_CREATE_TEMPLATE = 'https://vorlo-api-app.onrender.com/api/v1/templates/'
-
 export default {
     name: 'template-create-form',
     emits: ['close-dialog'],
