@@ -8,7 +8,7 @@
     </v-sheet>
 
     <v-dialog v-model="createProjectDialog" width="500" >
-      <ProjectCreationForm />
+      <ProjectCreationForm @close-dialog="createProjectDialog = false"/>
     </v-dialog>
     <br>
     <ProjectList />

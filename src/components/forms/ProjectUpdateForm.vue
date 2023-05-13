@@ -1,11 +1,10 @@
 <template>
     <v-alert class="my-6" v-model="successAlert" closable type="success" title="Successfully updated the project"
-        :text="successText" @input="successAlert = false"></v-alert>
+    @click:close="closeWholeDialog"></v-alert>
     <v-alert class="my-6" v-model="errorAlert" closable type="error"
-        title="Encountered an error when trying to update the project" :text="errorText"
-        @input="errorAlert = false"></v-alert>
+        title="Encountered an error when trying to update the project" @click:close="closeWholeDialog"></v-alert>
 
-    <v-sheet rounded color="green-lighten-5">
+    <v-sheet v-if="showForm" rounded color="green-lighten-5">
         <v-form class="pa-6" ref="updateProjectForm">
             <v-text-field 
                 label="Project name" 
@@ -13,12 +12,12 @@
                 v-model="projectName" 
                 :placeholder="projectName"
                 />
-            <v-combobox density="compact" variant="solo" :items="templates" item-title="name" item-value="id"
-                label="Select a template" v-model="selectedTemplate" :return-object="true"/>
+                <v-combobox density="compact" variant="solo" :items="this.templates" item-title="name" item-value="id"
+                label="Select a template" v-model="selectedItem" :return-object="true" />
             <v-container class="d-flex justify-center">
                 <v-btn 
                     variant="tonal"
-                    @click.prevent="submit"
+                    @click.prevent="submitUpdateForm"
                     >
                     Update
                 </v-btn>
@@ -28,86 +27,73 @@
 </template>
 
 <script>
-import axios from 'axios'
 
-
-const SERVER_API_URL_CREATE_PROJECT = 'https://vorlo-api-app.onrender.com/api/v1/projects/'
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'project-update-form',
+    emits: ['close-dialog'],
     props: {
         projectId: {
             type: Number,
             required: true,
         },
     },
-
     data() {
         return {
             projectName: null,
             projectTemplateName: null,
-            selectedTemplate: [],
-            templates: [],
-
-            errorText: null,
             errorAlert: false,
-            successText: null,
             successAlert: false,
-
-
+            selectedItem: [],
+            showForm: true,
         }
+    },
+    computed: {
+        ...mapGetters(['templates', 'selectedProject']),
     },
     async mounted() {
         try {
-            const response = await axios.get(`${this.$store.config.BACKEND_ENDPOINT_URL_PROJECTS}${this.projectId}`);
-            const projectData = response.data.data.projects;
-            this.projectName = projectData.name;
-            this.projectTemplateName = projectData.template.name;
-            this.listUploadedTemplates()
+            await this.getProject(this.projectId)
+            this.projectName = this.selectedProject.name;
+            this.projectTemplateName = this.selectedProject.template.name;
+            this.getTemplates()
         } catch (error) {
-            console.error('Error fetching project metadata:', error);
+            console.error('Error getting project metadata:', error);
         }
     },
-    created() {
-        this.listUploadedTemplates();
-    },
+
     methods: {
-        async submit() {
+        ...mapActions(['getTemplates', 'getProject', 'updateProject']),
+
+        async submitUpdateForm() {
             if (!this.projectName && !this.projectTemplateName) {
                 console.warn('Mindestens eines der Felder muss einen Wert haben.');
                 return;
             }
             if (this.$refs.updateProjectForm.validate()) { // check form validity before submitting
-                const formData = new FormData();
-                formData.append('id', this.projectId);
-                formData.append('vorloUserId', 1);  //currently just 1, no user logic yet
-                formData.append('projectName', this.projectName);
-                formData.append('templateId', this.selectedTemplate.id);
-                axios.put(this.$store.config.BACKEND_ENDPOINT_URL_PROJECTS, formData)
-                    .then((res) => {
-                        this.$refs.createProjectForm.reset()
-                        this.projectName = null;
-                        this.projectTemplateName = null;
-                        this.successText = "[" + res.status + "]: " + res.statusText
-                        this.successAlert = true;
-                    })
-                    .catch((err) => {
-                        this.errorText = err.message;
-                        this.errorAlert = true;
-                    })
+                try {
+                    await this.updateProject({
+                        projectId: this.projectId,
+                        vorloUserId: 1, 
+                        templateId: this.selectedProject.template.id,
+                        projectName: this.projectName, 
+                    }) 
+                    this.$refs.updateProjectForm.reset()
+                    this.projectName = null;
+                    this.projectTemplateName = null;
+                    this.successAlert = true;
+                    this.showForm = false;
+                } catch (error) {
+                    console.log(error)
+                    this.errorAlert = true;
+                }
             } 
         },
-        listUploadedTemplates() {
-
-            axios.get('https://vorlo-api-app.onrender.com/api/v1/templates/')
-
-                .then((res) => {
-                    console.log(res)
-                    this.templates = res.data.data.templates;
-                })
-                .catch((error) => {
-                    console.error('Error fetching templates:', error);
-                });
+        closeWholeDialog() {
+            this.successAlert = false;
+            this.errorAlert = false;
+            this.$emit('close-dialog');
         },
     }
 }

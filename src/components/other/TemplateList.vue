@@ -39,7 +39,7 @@
         <br>
 
         <v-dialog v-model="updateTemplateDialog" width="500">
-            <template-update-form :template-id="selectedTemplateId" />
+            <template-update-form :template-id="selectedTemplateId" @close-dialog="updateTemplateDialog = false" />
         </v-dialog>
     </div>
 </template>
@@ -66,19 +66,19 @@ export default {
     data() {
         return {
             updateTemplateDialog: false,
-            selectedProjectId: -1
+            selectedTemplateId: -1
         }
     },
     computed: {
         ...mapGetters(['templates', 'downloadedTemplate']),
     },
     mounted() {
-        this.fetchTemplates();
+        this.getTemplates();
     },
 
     methods: {
 
-        ...mapActions(['fetchTemplates', 'deleteTemplate', 'downloadTemplate']),
+        ...mapActions(['getTemplates', 'deleteTemplate', 'downloadTemplate']),
 
         editSelectedTemplate(templateId) {
             if (templateId === -1) { return; }
@@ -93,8 +93,6 @@ export default {
                 const url = window.URL.createObjectURL(new Blob([data]));
                 const link = document.createElement('a');
                 link.href = url;
-
-
                 const contentDisposition = headers['content-disposition'];
                 let fileName = 'unknown';
                 if (contentDisposition) {
