@@ -42,6 +42,7 @@ import DynamicContentMap from '@/components/other/DynamicContentMap.vue';
 import * as docx from 'docx-preview';
 import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
+
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
