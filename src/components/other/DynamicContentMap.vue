@@ -18,7 +18,6 @@
                     <td style="width: 100%;">
                         <v-text-field variant="underlined" v-model="item.value" @focus="storeOriginalValue(item.value)"
                             @blur="reportChange(item.value)"></v-text-field>
-
                     </td>
                 </tr>
             </tbody>
@@ -40,6 +39,7 @@
 
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
     name: 'dynamic-content-map',
     data() {
@@ -48,8 +48,18 @@ export default {
             originalValue: null,
         }
     },
-    mounted() {
-        this.keyValuePairs = Object.entries(this.$store.state.selectedProject.template.contentMap).map(([key, value]) => ({ key, value }));
+    computed: {
+        ...mapGetters(['selectedProject']),
+    },
+    watch: {
+        selectedProject: {
+            immediate: true,
+            handler(newValue) {
+                if (newValue && newValue.template && newValue.template.contentMap) {
+                    this.keyValuePairs = Object.entries(newValue.template.contentMap).map(([key, value]) => ({ key, value }));
+                }
+            },
+        },
     },
     methods: {
         storeOriginalValue(value) {

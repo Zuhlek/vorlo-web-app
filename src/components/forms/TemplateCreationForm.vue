@@ -1,10 +1,6 @@
-/*
-    https://vuetifyjs.com/en/components/file-inputs/
-    https://www.youtube.com/watch?v=VqnJwh6E9ak&ab_channel=Academind
-*/
 <template>
     <v-alert class="my-6" v-model="successAlert" closable type="success" title="Successfully created new template"
-    @click:close="closeWholeDialog"></v-alert>
+        @click:close="closeWholeDialog"></v-alert>
     <v-alert class="my-6" v-model="errorAlert" closable type="error"
         title="Encountered an error when trying to create new template" @click:close="closeWholeDialog"></v-alert>
 
@@ -26,8 +22,6 @@
 </template>
 
 <script>
-
-
 import { mapActions } from 'vuex';
 
 export default {

@@ -29,7 +29,7 @@
                         <v-btn icon variant="plain" @click="editSelectedProject(item.id)">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
-                        <v-btn icon variant="plain" @click="deleteSelectedProject(item.id)">
+                        <v-btn icon variant="plain" @click="deleteProject(item.id)">
                             <v-icon>mdi-trash-can-outline</v-icon>
                         </v-btn>
 
@@ -40,7 +40,7 @@
         <br>
 
         <v-dialog v-model="updateProjectDialog" width="500">
-            <project-update-form :project-id="selectedProjectId" />
+            <project-update-form :project-id="selectedProjectId" @close-dialog="updateProjectDialog = false"/>
         </v-dialog>
     </div>
 </template>
@@ -56,9 +56,8 @@
 </style>
 
 <script>
-import axios from 'axios'
 import ProjectUpdateForm from '../forms/ProjectUpdateForm.vue';
-
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'project-list',
@@ -67,60 +66,56 @@ export default {
     },
     data() {
         return {
-            projects: null,
             updateProjectDialog: false,
             selectedProjectId: -1
         }
     },
+    computed: {
+        ...mapGetters(['projects', 'downloadedTemplate']),
+    },
     mounted() {
-        this.listUploadedProjects()
+        this.getProjects()
     },
     methods: {
-        listUploadedProjects() {
+        ...mapActions(['getProjects', 'getProject', 'deleteProject']),
+        async openProjectDetails(projectId) {
 
-            axios.get('https://vorlo-api-app.onrender.com/api/v1/projects/')
+            if (projectId == null) return;
 
-                .then((res) => {
-                    this.projects = res.data.data.projects;
-                })
-                .catch((error) => {
-                    console.error('Error fetching projects:', error);
-                });
-        },
-        async openProjectDetails(projectId){
-
-            if(projectId == null) return;
-
-
-            await axios.get(`https://vorlo-api-app.onrender.com/api/v1/projects/${projectId}`)
-
-                .then((res) => {
-                    this.$store.state.selectedProject = res.data.data.project
-                    this.$store.state.selectedProjectId = projectId;
-                    this.$store.state.projectWasSelected = true;
-                })
-                .catch((error) => {
-                    console.error('Error fetching projects:', error);
-                });
-
-            this.$router.push("/details");
+            await this.getProject(projectId)
+            .then(() =>
+                this.$router.push("/details")
+            )
         },
         editSelectedProject(projectId) {
-            if (projectId === -1) { 
-                return; 
-            }
+            if (projectId === -1) { return; }
             this.selectedProjectId = projectId;
             this.updateProjectDialog = true;
         },
-        deleteSelectedProject(projectId) {
-            axios.delete(`${this.$store.config.BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`)
-                .then(() => {
-                    this.listUploadedProjects();
-                })
-                .catch((error) => {
-                    console.error('Error deleting projects:', error);
-                });
+    },
+    watch: {
+        downloadedTemplate(newValue) {
+            if (newValue) {
+                const { data, headers } = newValue;
+                const url = window.URL.createObjectURL(new Blob([data]));
+                const link = document.createElement('a');
+                link.href = url;
+
+
+                const contentDisposition = headers['content-disposition'];
+                let fileName = 'unknown';
+                if (contentDisposition) {
+                    const fileNameMatch = contentDisposition.match(/filename="([^"]+)/);
+                    if (fileNameMatch && fileNameMatch.length > 1) {
+                        fileName = fileNameMatch[1];
+                    }
+                }
+                link.setAttribute('download', fileName);
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode.removeChild(link);
+            }
         },
-    }
+    },
 }
 </script>
