@@ -5,9 +5,11 @@ const BACKEND_ENDPOINT_URL_PROJECTS = "http://localhost:8080/api/v1/projects/";
 //const BACKEND_ENDPOINT_URL_PROJECTS = "https://vorlo-api-app.onrender.com/api/v1/projects/";
 
 export default {
-  async getProjects() {
+  async getProjects(accessToken) {
     try {
-      const response = await axios.get(BACKEND_ENDPOINT_URL_PROJECTS);
+      const response = await axios.get(BACKEND_ENDPOINT_URL_PROJECTS, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
       return response.data.data.projects;
     } catch (error) {
       console.error('Error getting projects:', error);
@@ -15,9 +17,11 @@ export default {
     }
   },
 
-  async getProject(projectId) {
+  async getProject(accessToken, projectId) {
     try {
-      const response = await axios.get(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`);
+      const response = await axios.get(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
       return response.data.data.project;
     } catch (error) {
       console.error(`Error getting project with id ${projectId}:`, error);
@@ -25,9 +29,11 @@ export default {
     }
   },
 
-  async deleteProject(projectId) {
+  async deleteProject(accessToken, projectId) {
     try {
-      await axios.delete(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`);
+      await axios.delete(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
     } catch (error) {
       console.error(`Error deleting project with id ${projectId}:`, error);
       throw error;
@@ -61,11 +67,12 @@ export default {
     }
   },
 
-  async createAndDownloadTemplate(projectId) {
+  async createAndDownloadTemplate(accessToken, projectId) {
     try {
       const response = await axios.get(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}/generate-document`, {
         responseType: "blob",
-      })
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
       return { data: response.data, headers: response.headers };
     } catch (error) {
       console.error('Error creating and downloading template:', error);
