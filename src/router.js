@@ -13,6 +13,11 @@ const routes = [
     component: Auth,
   },  
   {
+    path: '/',
+    name: 'Root',
+    meta: { requiresAuth: true, layout: 'default' },
+  },  
+  {
     path: '/templates',
     name: 'Templates',
     component: Templates,
