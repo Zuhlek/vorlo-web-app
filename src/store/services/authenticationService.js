@@ -12,10 +12,11 @@ const register = (firstName, lastName, email, password) => {
     });
 };
 
-const login = (username, password) => {
+const login = (email, password) => {
     console.log("request received at service... sending axios request...")
+    console.log(`${API_URL}/authenticate -> ${email} and ${password}` )
     return axios.post(`${API_URL}/authenticate`, {
-        username,
+        email,
         password,
     });
 };

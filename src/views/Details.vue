@@ -14,13 +14,18 @@
         {{ this.selectedProject.name }}
       </v-label>
       <v-spacer></v-spacer>
-      <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="applyNewContentMap()"
+      <div>
+              <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="applyNewContentMap()"
         v-if="changesHappened">
         <v-icon>mdi-content-save</v-icon>
       </v-chip>
-      <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="applyAndDownload()">
+      </div>
+      <div>
+        <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="applyAndDownload()">
         <v-icon>mdi-download</v-icon>
       </v-chip>
+      </div>
+
     </v-sheet>
     <v-sheet rounded color="green-lighten-5" class="d-flex justify-space-around">
     </v-sheet>

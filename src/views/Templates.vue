@@ -4,8 +4,11 @@
       <v-sheet class="d-flex justify-space-around">
         <v-label style="font-size: larger">Templates</v-label>
         <v-spacer></v-spacer>
-        <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="createNewTemplate">
+        <div>
+                  <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="createNewTemplate">
           <v-icon>mdi-plus</v-icon></v-chip>
+        </div>
+
       </v-sheet>
     </div>
       <v-dialog v-model="createTemplateDialog" width="500">

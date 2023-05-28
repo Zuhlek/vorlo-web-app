@@ -1,10 +1,16 @@
 <template>
   <div class="pa-6">
-    <v-sheet class="d-flex justify-space-around">
-      <v-label style="font-size: larger">Projects</v-label>
-      <v-spacer></v-spacer>
-      <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="createNewProject">
-      <v-icon>mdi-plus</v-icon></v-chip>
+    <v-sheet class="d-flex justify-space-between">
+
+        <v-label style="font-size: larger">Projects</v-label>
+        <v-spacer></v-spacer>
+        <div>          
+          <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="createNewProject">
+            <v-icon>mdi-plus</v-icon>
+          </v-chip>
+        </div>
+
+
     </v-sheet>
 
     <v-dialog v-model="createProjectDialog" width="500" >

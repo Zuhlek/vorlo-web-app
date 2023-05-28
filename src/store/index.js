@@ -61,17 +61,22 @@ const store = createStore({
     async register({ commit }, { firstName, lastName, email, password }) {
       console.log("request received at store... processing...")
       const response = await authenticationService.register(firstName, lastName, email, password);
-      const { accessToken, refreshToken } = response.data;
+      const accessToken = response.data.access_token;
+      const refreshToken = response.data.refresh_token
       console.log("received answer from server: ")
       console.log(response)
+      console.log(accessToken)
+      console.log(refreshToken)
       commit('setTokens', { accessToken, refreshToken });
     },
     async login({ commit }, { email, password }) {
       console.log("request received at store... processing...")
       const response = await authenticationService.login(email, password);
-      const { accessToken, refreshToken } = response.data;
+      const accessToken = response.data.access_token;
+      const refreshToken = response.data.refresh_token
       console.log("received answer from server: ")
-      console.log(response)
+      console.log("access token = " + accessToken)
+      console.log("refresh token = " + refreshToken)
       commit('setTokens', { accessToken, refreshToken });
     },
     async refreshToken({ commit, getters }) {
@@ -84,31 +89,33 @@ const store = createStore({
     },
     //TEMPLATE API
     async getTemplates({ commit, state }) {
+      console.log("access token = " + state.accessToken)
+      console.log("refresh token = " + state.refreshToken)
       const templates = await templateService.getTemplates(state.accessToken);
       commit("setTemplates", templates);
     },
     async getTemplate({ commit, state }, templateId) {
-      const template = await templateService.getTemplate(templateId, state.accessToken);
+      const template = await templateService.getTemplate(state.accessToken, templateId);
       commit("setSelectedTemplate", template);
     },
     async deleteTemplate({ dispatch, state }, templateId) {
-      await templateService.deleteTemplate(templateId, state.accessToken);
+      await templateService.deleteTemplate(state.accessToken, templateId);
       dispatch("getTemplates");
     },
     async downloadTemplate({ commit, state }, templateId) {
-      const downloadedTemplate = await templateService.downloadTemplate(templateId, state.accessToken);
+      const downloadedTemplate = await templateService.downloadTemplate(state.accessToken, templateId);
       commit("setDownloadedTemplate", downloadedTemplate);
     },
     async updateTemplate(
       { dispatch, state },
       { templateId, templateFile, templateName, templateDescription }
     ) {
-      await templateService.updateTemplate({
+      await templateService.updateTemplate(state.accessToken, {
         templateId,
         templateFile,
         templateName,
         templateDescription,
-      }, state.accessToken);
+      });
       dispatch("getTemplates");
     },
     async createTemplate(
@@ -116,22 +123,22 @@ const store = createStore({
       { templateFile, templateName, templateDescription }
     ) {
       await templateService.createTemplate(
+        state.accessToken,
         templateFile,
         templateName,
-        templateDescription,
-        state.accessToken
+        templateDescription
       );
       dispatch("getTemplates");
     },
     async getTemplateDoc({ commit, state }, templateId) {
-      const docData = await templateService.getTemplateDoc(templateId, state.accessToken);
+      const docData = await templateService.getTemplateDoc(state.accessToken, templateId);
       commit("setDocData", docData);
     },
     async updateContentMap({ commit, state }, { templateId, updatedContentMap }) {
       const response = await templateService.updateContentMap(
+        state.accessToken,
         templateId,
-        updatedContentMap,
-        state.accessToken
+        updatedContentMap
       );
       commit("setContentMapResponse", response);
     },
@@ -142,11 +149,11 @@ const store = createStore({
       commit("setProjects", projects);
     },
     async getProject({ commit, state }, projectId) {
-      const project = await projectService.getProject(projectId, state.accessToken);
+      const project = await projectService.getProject(state.accessToken, projectId);
       commit("setSelectedProject", project);
     },
     async deleteProject({ dispatch, state }, projectId) {
-      await projectService.deleteProject(projectId, state.accessToken);
+      await projectService.deleteProject(state.accessToken, projectId);
       dispatch("getProjects");
     },
     async updateProject(
@@ -154,11 +161,11 @@ const store = createStore({
       { projectId, vorloUserId, templateId, projectName }
     ) {
       await projectService.updateProject(
+        state.accessToken,
         projectId,
         vorloUserId,
         templateId,
-        projectName,
-        state.accessToken
+        projectName
       );
       dispatch("getProjects");
     },
@@ -166,13 +173,13 @@ const store = createStore({
       { dispatch, state },
       { vorloUserId, templateId, projectName }
     ) {
-      await projectService.createProject(vorloUserId, templateId, projectName, state.accessToken);
+      await projectService.createProject(state.accessToken, vorloUserId, templateId, projectName);
       dispatch("getProjects");
     },
     async createAndDownloadTemplate({ commit, state }, projectId) {
       const downloadData = await projectService.createAndDownloadTemplate(
+        state.accessToken, 
         projectId,
-        state.accessToken
       );
       commit("setDownloadData", downloadData);
     },

@@ -8,10 +8,12 @@ const BACKEND_ENDPOINT_URL_TEMPLATES = "http://localhost:8080/api/v1/templates/"
 export default {
 
   async getTemplates(accessToken) {
+    console.log("bearer token = " + accessToken)
     try {
       const response = await axios.get(BACKEND_ENDPOINT_URL_TEMPLATES, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
       });
+      console.log("fetched templates answer: " + response)
       return response.data.data.templates.filter(
         template => template.vorloProjectId === 0);
     } catch (error) {

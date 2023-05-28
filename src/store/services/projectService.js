@@ -40,27 +40,31 @@ export default {
     }
   },
 
-  async updateProject(projectId, vorloUserId, templateId, projectName) {
+  async updateProject(accessToken, projectId, vorloUserId, templateId, projectName) {
     try {
       const formData = new FormData();
       formData.append('id', projectId);
       formData.append('templateId', templateId);
       formData.append('vorloUserId', vorloUserId);  //currently just 1, no user logic yet
       formData.append('projectName', projectName);
-      axios.put(BACKEND_ENDPOINT_URL_PROJECTS, formData)
+      axios.put(BACKEND_ENDPOINT_URL_PROJECTS, formData, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
     } catch (error) {
       console.error('Error updating project:', error);
       throw error;
     }
   },
 
-  async createProject(vorloUserId, templateId, projectName) {
+  async createProject(accessToken, vorloUserId, templateId, projectName) {
     try {
       const formData = new FormData();
       formData.append('vorloUserId', vorloUserId);
       formData.append('templateId', templateId);
       formData.append('projectName', projectName);
-      return await axios.post(BACKEND_ENDPOINT_URL_PROJECTS, formData);
+      return await axios.post(BACKEND_ENDPOINT_URL_PROJECTS, formData, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
     } catch (error) {
       console.error('Error creating project:', error);
       throw error;
