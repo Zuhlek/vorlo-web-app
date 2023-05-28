@@ -59,24 +59,15 @@ const store = createStore({
   actions: {
     //AUTHENTICATION API
     async register({ commit }, { firstName, lastName, email, password }) {
-      console.log("request received at store... processing...")
       const response = await authenticationService.register(firstName, lastName, email, password);
       const accessToken = response.data.access_token;
       const refreshToken = response.data.refresh_token
-      console.log("received answer from server: ")
-      console.log(response)
-      console.log(accessToken)
-      console.log(refreshToken)
       commit('setTokens', { accessToken, refreshToken });
     },
     async login({ commit }, { email, password }) {
-      console.log("request received at store... processing...")
       const response = await authenticationService.login(email, password);
       const accessToken = response.data.access_token;
       const refreshToken = response.data.refresh_token
-      console.log("received answer from server: ")
-      console.log("access token = " + accessToken)
-      console.log("refresh token = " + refreshToken)
       commit('setTokens', { accessToken, refreshToken });
     },
     async refreshToken({ commit, getters }) {
@@ -87,10 +78,9 @@ const store = createStore({
     logout({ commit }) {
       commit('clearTokens');
     },
+    
     //TEMPLATE API
     async getTemplates({ commit, state }) {
-      console.log("access token = " + state.accessToken)
-      console.log("refresh token = " + state.refreshToken)
       const templates = await templateService.getTemplates(state.accessToken);
       commit("setTemplates", templates);
     },
@@ -158,12 +148,11 @@ const store = createStore({
     },
     async updateProject(
       { dispatch, state },
-      { projectId, vorloUserId, templateId, projectName }
+      { projectId, templateId, projectName }
     ) {
       await projectService.updateProject(
         state.accessToken,
         projectId,
-        vorloUserId,
         templateId,
         projectName
       );
@@ -171,9 +160,9 @@ const store = createStore({
     },
     async createProject(
       { dispatch, state },
-      { vorloUserId, templateId, projectName }
+      { templateId, projectName }
     ) {
-      await projectService.createProject(state.accessToken, vorloUserId, templateId, projectName);
+      await projectService.createProject(state.accessToken, templateId, projectName);
       dispatch("getProjects");
     },
     async createAndDownloadTemplate({ commit, state }, projectId) {

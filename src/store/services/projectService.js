@@ -2,7 +2,6 @@
 import axios from 'axios';
 
 const BACKEND_ENDPOINT_URL_PROJECTS = "http://localhost:8080/api/v1/projects/";
-//const BACKEND_ENDPOINT_URL_PROJECTS = "https://vorlo-api-app.onrender.com/api/v1/projects/";
 
 export default {
   async getProjects(accessToken) {
@@ -40,12 +39,11 @@ export default {
     }
   },
 
-  async updateProject(accessToken, projectId, vorloUserId, templateId, projectName) {
+  async updateProject(accessToken, projectId, templateId, projectName) {
     try {
       const formData = new FormData();
       formData.append('id', projectId);
       formData.append('templateId', templateId);
-      formData.append('vorloUserId', vorloUserId);  //currently just 1, no user logic yet
       formData.append('projectName', projectName);
       axios.put(BACKEND_ENDPOINT_URL_PROJECTS, formData, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
@@ -56,10 +54,9 @@ export default {
     }
   },
 
-  async createProject(accessToken, vorloUserId, templateId, projectName) {
+  async createProject(accessToken, templateId, projectName) {
     try {
       const formData = new FormData();
-      formData.append('vorloUserId', vorloUserId);
       formData.append('templateId', templateId);
       formData.append('projectName', projectName);
       return await axios.post(BACKEND_ENDPOINT_URL_PROJECTS, formData, {

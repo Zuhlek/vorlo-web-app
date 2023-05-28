@@ -77,9 +77,7 @@ export default {
       try {
         await this.getTemplateDoc(this.selectedProject.template.id)
         .then(() => console.log("container " + this.$refs.docxContainer))
-        console.log("docData " + this.docData)
         const container = this.$refs.docxContainer;
-        console.log("container " + container)
         const options = {
           inWrapper: true, //enables rendering of wrapper around document content
           ignoreWidth: true,
