@@ -1,6 +1,6 @@
 import axios from 'axios'; 
 
-const API_URL = 'http://localhost:8080/api/v1/auth'; 
+const API_URL = 'https://vorlo-web-app.onrender.com/auth'; 
 
 const register = (firstName, lastName, email, password) => {
     return axios.post(`${API_URL}/register`, {
