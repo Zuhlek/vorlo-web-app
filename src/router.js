@@ -17,25 +17,25 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
-    meta: { requiresAuth: true, layout: 'default' },
+    meta: { layout: 'default' },
   },  
   {
     path: '/templates',
     name: 'Templates',
     component: Templates,
-    meta: { requiresAuth: true, layout: 'default' },
+    meta: { layout: 'default' },
   },
   {
     path: '/projects',
     name: 'Projects',
     component: Projects,
-    meta: { requiresAuth: true, layout: 'default' },
+    meta: { layout: 'default' },
   },
   {
     path: '/details',
     name: 'Details',
     component: Details,
-    meta: { requiresAuth: true, layout: 'default' },
+    meta: { layout: 'default' },
   },
 ];
 
@@ -48,20 +48,18 @@ router.beforeEach((to, from, next) => {
   try {
     const isAuthenticated = store.getters.accessToken !== null;
     console.log(isAuthenticated); 
-    if (to.matched.some(record => record.meta.requiresAuth)) {
-      if (!isAuthenticated) {
-        next({ name: 'Auth' });
-      } else {
-        next(); 
-      }
-    } else {
+
+    if (to.name === 'Auth') {
       next();
+    } else if (isAuthenticated) {
+      next();
+    } else {
+      next({ name: 'Auth' });
     }
   } catch (error) {
     console.error('Error in beforeEach:', error);
     next({ name: 'Auth' });
   }
 });
-
 
 export default router;
