@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <NavBar />
-    <AppBar />
+    <NavBar v-if="this.$route.meta.layout !== 'empty'" />
+    <AppBar v-if="this.$route.meta.layout !== 'empty'" />
     <v-main>
       <router-view />        
     </v-main>

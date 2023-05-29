@@ -2,13 +2,15 @@
 import axios from 'axios';
 
 
-//const BACKEND_ENDPOINT_URL_TEMPLATES = "http://localhost:8080/api/v1/templates/";
-const BACKEND_ENDPOINT_URL_TEMPLATES = "https://vorlo-api-app.onrender.com/api/v1/templates/";
+const BACKEND_ENDPOINT_URL_TEMPLATES = "http://localhost:8080/api/v1/templates/";
 
 export default {
-  async getTemplates() {
+
+  async getTemplates(accessToken) {
     try {
-      const response = await axios.get(BACKEND_ENDPOINT_URL_TEMPLATES);
+      const response = await axios.get(BACKEND_ENDPOINT_URL_TEMPLATES, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
       return response.data.data.templates.filter(
         template => template.vorloProjectId === 0);
     } catch (error) {
@@ -16,9 +18,12 @@ export default {
       throw error;
     }
   },
-  async getTemplate(templateId) {
+
+  async getTemplate(accessToken, templateId) {
     try {
-      const response = await axios.get(`${BACKEND_ENDPOINT_URL_TEMPLATES}${templateId}`);
+      const response = await axios.get(`${BACKEND_ENDPOINT_URL_TEMPLATES}${templateId}`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
       return response.data.data.template;
     } catch (error) {
       console.error(`Error getting template with id ${templateId}:`, error);
@@ -26,18 +31,23 @@ export default {
     }
   },
 
-  async deleteTemplate(templateId) {
+  async deleteTemplate(accessToken, templateId) {
     try {
-      await axios.delete(`${BACKEND_ENDPOINT_URL_TEMPLATES}${templateId}`);
+      await axios.delete(`${BACKEND_ENDPOINT_URL_TEMPLATES}${templateId}`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
     } catch (error) {
       console.error('Error deleting template:', error);
       throw error;
     }
   },
 
-  async downloadTemplate(templateId) {
+  async downloadTemplate(accessToken, templateId) {
     try {
-      const response = await axios.get(`${BACKEND_ENDPOINT_URL_TEMPLATES}${templateId}/download-file`, { responseType: 'blob' });
+      const response = await axios.get(`${BACKEND_ENDPOINT_URL_TEMPLATES}${templateId}/download-file`, { 
+        responseType: 'blob',
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
       return { data: response.data, headers: response.headers };
     } catch (error) {
       console.error('Error downloading template:', error);
@@ -45,17 +55,17 @@ export default {
     }
   }, 
 
-  async updateTemplate({ templateId, templateFile, templateName, templateDescription }) {
+  async updateTemplate(accessToken, { templateId, templateFile, templateName, templateDescription }) {
     try {
       const formData = new FormData();
       const config = {
         headers: {
+          'Authorization': `Bearer ${accessToken}`,
           'content-type': 'multipart/form-data'
         }
       };
       formData.append('templateId', templateId);
       formData.append('vorloProjectId', 0); // 0 = template, ansonsten projektbezogen
-      formData.append('vorloUserId', 1);
       if (templateFile) {
         formData.append('file', templateFile, templateFile.name);
       }
@@ -72,17 +82,17 @@ export default {
     }
   },
 
-  async createTemplate(templateFile, templateName, templateDescription) {
+  async createTemplate(accessToken, templateFile, templateName, templateDescription) {
     try {
       const formData = new FormData();
       const config = {
         headers: {
+          'Authorization': `Bearer ${accessToken}`,
           'content-type': 'multipart/form-data'
         }
       }
       formData.append('file', templateFile, templateFile.name);
       formData.append('vorloProjectId', 0);
-      formData.append('vorloUserId', 1);
       formData.append('templateName', templateName);
       formData.append('templateDescription', templateDescription);
       return await axios.post(BACKEND_ENDPOINT_URL_TEMPLATES, formData, config);
@@ -91,11 +101,13 @@ export default {
       throw error;
     }
   },
-  async getTemplateDoc(templateId) {
+  
+  async getTemplateDoc(accessToken, templateId) {
     try {
       const response = await axios.get(`${BACKEND_ENDPOINT_URL_TEMPLATES}${templateId}/download-file`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` },
         responseType: 'arraybuffer'
-      })
+      });
       return response.data;
     } catch (error) {
       console.error('Error getting template document:', error);
@@ -103,9 +115,11 @@ export default {
     }
   },
   
-  async updateContentMap(templateId, updatedContentMap) {
+  async updateContentMap(accessToken, templateId, updatedContentMap) {
     try {
-      const response = await axios.put(`${BACKEND_ENDPOINT_URL_TEMPLATES}${templateId}/content-map`, updatedContentMap)
+      const response = await axios.put(`${BACKEND_ENDPOINT_URL_TEMPLATES}${templateId}/content-map`, updatedContentMap, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
       return response;
     } catch (error) {
       console.error('Error updating content map:', error);

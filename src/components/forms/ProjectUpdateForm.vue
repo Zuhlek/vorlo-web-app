@@ -75,7 +75,6 @@ export default {
                 try {
                     await this.updateProject({
                         projectId: this.projectId,
-                        vorloUserId: 1, 
                         templateId: this.selectedProject.template.id,
                         projectName: this.projectName, 
                     }) 
@@ -85,7 +84,6 @@ export default {
                     this.successAlert = true;
                     this.showForm = false;
                 } catch (error) {
-                    console.log(error)
                     this.errorAlert = true;
                 }
             } 

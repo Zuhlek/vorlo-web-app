@@ -53,7 +53,6 @@ export default {
             if (this.$refs.createProjectForm.validate()) { // check form validity before submitting
                 try{
                     await this.createProject({
-                        vorloUserId: 1, 
                         templateId: this.selectedItem.id, 
                         projectName: this.projectName})
                     this.$refs.createProjectForm.reset()

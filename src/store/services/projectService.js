@@ -1,13 +1,14 @@
 
 import axios from 'axios';
 
-//const BACKEND_ENDPOINT_URL_PROJECTS = "http://localhost:8080/api/v1/projects/";
-const BACKEND_ENDPOINT_URL_PROJECTS = "https://vorlo-api-app.onrender.com/api/v1/projects/";
+const BACKEND_ENDPOINT_URL_PROJECTS = "http://localhost:8080/api/v1/projects/";
 
 export default {
-  async getProjects() {
+  async getProjects(accessToken) {
     try {
-      const response = await axios.get(BACKEND_ENDPOINT_URL_PROJECTS);
+      const response = await axios.get(BACKEND_ENDPOINT_URL_PROJECTS, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
       return response.data.data.projects;
     } catch (error) {
       console.error('Error getting projects:', error);
@@ -15,9 +16,11 @@ export default {
     }
   },
 
-  async getProject(projectId) {
+  async getProject(accessToken, projectId) {
     try {
-      const response = await axios.get(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`);
+      const response = await axios.get(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
       return response.data.data.project;
     } catch (error) {
       console.error(`Error getting project with id ${projectId}:`, error);
@@ -25,47 +28,52 @@ export default {
     }
   },
 
-  async deleteProject(projectId) {
+  async deleteProject(accessToken, projectId) {
     try {
-      await axios.delete(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`);
+      await axios.delete(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
     } catch (error) {
       console.error(`Error deleting project with id ${projectId}:`, error);
       throw error;
     }
   },
 
-  async updateProject(projectId, vorloUserId, templateId, projectName) {
+  async updateProject(accessToken, projectId, templateId, projectName) {
     try {
       const formData = new FormData();
       formData.append('id', projectId);
       formData.append('templateId', templateId);
-      formData.append('vorloUserId', vorloUserId);  //currently just 1, no user logic yet
       formData.append('projectName', projectName);
-      axios.put(BACKEND_ENDPOINT_URL_PROJECTS, formData)
+      axios.put(BACKEND_ENDPOINT_URL_PROJECTS, formData, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
     } catch (error) {
       console.error('Error updating project:', error);
       throw error;
     }
   },
 
-  async createProject(vorloUserId, templateId, projectName) {
+  async createProject(accessToken, templateId, projectName) {
     try {
       const formData = new FormData();
-      formData.append('vorloUserId', vorloUserId);
       formData.append('templateId', templateId);
       formData.append('projectName', projectName);
-      return await axios.post(BACKEND_ENDPOINT_URL_PROJECTS, formData);
+      return await axios.post(BACKEND_ENDPOINT_URL_PROJECTS, formData, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
     } catch (error) {
       console.error('Error creating project:', error);
       throw error;
     }
   },
 
-  async createAndDownloadTemplate(projectId) {
+  async createAndDownloadTemplate(accessToken, projectId) {
     try {
       const response = await axios.get(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}/generate-document`, {
         responseType: "blob",
-      })
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
       return { data: response.data, headers: response.headers };
     } catch (error) {
       console.error('Error creating and downloading template:', error);
