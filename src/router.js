@@ -45,16 +45,21 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = store.getters.accessToken !== null;
-  console.log(isAuthenticated); 
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!isAuthenticated) {
-      next({ name: 'Auth' });
+  try {
+    const isAuthenticated = store.getters.accessToken !== null;
+    console.log(isAuthenticated); 
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (!isAuthenticated) {
+        next({ name: 'Auth' });
+      } else {
+        next(); 
+      }
     } else {
-      next(); 
+      next();
     }
-  } else {
-    next();
+  } catch (error) {
+    console.error('Error in beforeEach:', error);
+    next({ name: 'Auth' });
   }
 });
 
