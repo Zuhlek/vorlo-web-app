@@ -47,7 +47,6 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   try {
     const isAuthenticated = store.getters.accessToken !== null;
-    console.log(isAuthenticated); 
 
     if (to.name === 'Auth') {
       next();

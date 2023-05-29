@@ -2,7 +2,6 @@
 import axios from 'axios';
 
 const BACKEND_ENDPOINT_URL_TEMPLATES = "https://vorlo-api-app.onrender.com/api/v1/templates/";
-//const BACKEND_ENDPOINT_URL_TEMPLATES = 'http://localhost:8080/api/v1/templates/'; 
 
 export default {
 
