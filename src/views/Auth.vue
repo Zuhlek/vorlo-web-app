@@ -47,7 +47,12 @@ export default {
                 } else {
                     await this.register({ firstName: this.firstName, lastName: this.lastName, email: this.email, password: this.password });
                 }
-                this.$router.push('/');
+                if(this.$store.getters.accessToken === null){
+                    this.$router.push('/auth');
+                } else {
+                    this.$router.push('/');
+                }
+                
             } catch (error) {
 
                 if (error.response && error.response.status === 409) {
