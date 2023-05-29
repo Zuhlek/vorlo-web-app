@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Home from './views/Home.vue'
 import Templates from './views/Templates.vue'
 import Projects from './views/Projects.vue'
 import Details from './views/Details.vue'
@@ -14,7 +15,8 @@ const routes = [
   },  
   {
     path: '/',
-    name: 'Root',
+    name: 'Home',
+    component: Home,
     meta: { requiresAuth: true, layout: 'default' },
   },  
   {
@@ -44,6 +46,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const isAuthenticated = store.getters.accessToken !== null;
+  console.log(isAuthenticated); 
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!isAuthenticated) {
       next({ name: 'Auth' });
