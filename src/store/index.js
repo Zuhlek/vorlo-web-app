@@ -2,6 +2,7 @@ import { createStore } from "vuex";
 import templateService from "./services/templateService";
 import projectService from "./services/projectService";
 import authenticationService from "./services/authenticationService";
+import documentService from "./services/documentService";
 
 const store = createStore({
   state: {
@@ -15,8 +16,11 @@ const store = createStore({
     projects: [],
     selectedProject: null,
 
+    documents: [],
+    selectedDocument: null,
+
     docData: null,
-    contentMapResponse: null,
+    dynamicContents: null,
     downloadData: null,
 
     accessToken: null,
@@ -46,12 +50,18 @@ const store = createStore({
     setSelectedProject(state, project) {
       state.selectedProject = project;
     },
+    setDocuments(state, documents) {
+      state.documents = documents;
+    },
+    setSelectedDocument(state, document) {
+      state.selectedDocument = document;
+    },
     setDocData(state, docData) {
       state.docData = docData;
     },
-    setContentMapResponse(state, response) {
-      state.contentMapResponse = response;
-    },
+    setDynamicContents(state, dynamicContents) {
+      state.dynamicContents = dynamicContents;
+    },    
     setDownloadData(state, { data, headers }) {
       state.downloadData = { data, headers };
     },
@@ -110,27 +120,20 @@ const store = createStore({
     },
     async createTemplate(
       { dispatch, state },
-      { templateFile, templateName, templateDescription }
+      { templateFile, templateName, templateDescription, templateType }
     ) {
       await templateService.createTemplate(
         state.accessToken,
         templateFile,
         templateName,
-        templateDescription
+        templateDescription,
+        templateType
       );
       dispatch("getTemplates");
     },
     async getTemplateDoc({ commit, state }, templateId) {
       const docData = await templateService.getTemplateDoc(state.accessToken, templateId);
       commit("setDocData", docData);
-    },
-    async updateContentMap({ commit, state }, { templateId, updatedContentMap }) {
-      const response = await templateService.updateContentMap(
-        state.accessToken,
-        templateId,
-        updatedContentMap
-      );
-      commit("setContentMapResponse", response);
     },
 
     //PROJECT API
@@ -148,29 +151,71 @@ const store = createStore({
     },
     async updateProject(
       { dispatch, state },
-      { projectId, templateId, projectName }
+      { projectId, projectName, projectDescription }
     ) {
       await projectService.updateProject(
         state.accessToken,
         projectId,
-        templateId,
-        projectName
+        projectName,
+        projectDescription
       );
       dispatch("getProjects");
     },
     async createProject(
       { dispatch, state },
-      { templateId, projectName }
+      { projectName, projectDescription }
     ) {
-      await projectService.createProject(state.accessToken, templateId, projectName);
+      await projectService.createProject(state.accessToken, projectName, projectDescription);
       dispatch("getProjects");
     },
-    async createAndDownloadTemplate({ commit, state }, projectId) {
-      const downloadData = await projectService.createAndDownloadTemplate(
+
+    //DOCUMENT API
+    async getDocumentsByProjectId({ commit, state }, projectId) {
+      const documents = await documentService.getDocumentsByProjectId(state.accessToken, projectId);
+      commit("setDocuments", documents);
+    },
+    async getDocument({ commit, state }, documentId) {
+      const document = await documentService.getDocument(state.accessToken, documentId);
+      console.log(document)
+      commit("setSelectedDocument", document);
+    },
+    async deleteDocument({ commit, state }, documentId, projectId) {
+      await documentService.deleteDocument(state.accessToken, documentId);
+      commit("getDocumentsByProjectId", projectId);
+    },
+    async updateDocument(
+      { commit, state },
+      { projectId, documentId, documentName, documentDescription }
+    ) {
+      await documentService.updateDocument(
+        state.accessToken,
+        documentId,
+        documentName,
+        documentDescription
+      );
+      commit("getDocumentsByProjectId", projectId);
+    },
+    async createDocument(
+      { dispatch, state },
+      { projectId, templateId, documentName, documentDescription }
+    ) {
+      await documentService.createDocument(state.accessToken, projectId, templateId, documentName, documentDescription);
+      dispatch("getDocumentsByProjectId", projectId);
+    },
+    async createAndDownloadDocument({ commit, state }, documentId) {
+      const downloadData = await documentService.createAndDownloadDocument(
         state.accessToken, 
-        projectId,
+        documentId,
       );
       commit("setDownloadData", downloadData);
+    },
+    async updateDynamicContents({ commit, state }, { documentId, dynamicContents }) {
+      const dynamicContent = await documentService.updateDynamicContents(
+        state.accessToken,
+        documentId,
+        dynamicContents
+      );
+      commit("setDynamicContents", dynamicContent);
     },
   },
   getters: {
@@ -195,11 +240,17 @@ const store = createStore({
     selectedProject: (state) => {
       return state.selectedProject;
     },
+    documents: (state) => {
+      return state.documents;
+    },
+    selectedDocument: (state) => {
+      return state.selectedDocument;
+    },
     docData: (state) => {
       return state.docData;
     },
-    contentMapResponse: (state) => {
-      return state.contentMapResponse;
+    dynamicContents: (state) => {
+      return state.dynamicContents;
     },
     downloadData: (state) => {
       return state.downloadData;

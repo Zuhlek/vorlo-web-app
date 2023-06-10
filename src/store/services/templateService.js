@@ -11,8 +11,8 @@ export default {
       const response = await axios.get(BACKEND_ENDPOINT_URL_TEMPLATES, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
       });
-      return response.data.data.templates.filter(
-        template => template.vorloProjectId === 0);
+      console.log(response)
+      return response.data.data.templates
     } catch (error) {
       console.error('Error getting templates:', error);
       throw error;
@@ -82,7 +82,7 @@ export default {
     }
   },
 
-  async createTemplate(accessToken, templateFile, templateName, templateDescription) {
+  async createTemplate(accessToken, templateFile, templateName, templateDescription, templateType) {
     try {
       const formData = new FormData();
       const config = {
@@ -92,9 +92,9 @@ export default {
         }
       }
       formData.append('file', templateFile, templateFile.name);
-      formData.append('vorloProjectId', 0);
       formData.append('templateName', templateName);
       formData.append('templateDescription', templateDescription);
+      formData.append('templateType', templateType)
       return await axios.post(BACKEND_ENDPOINT_URL_TEMPLATES, formData, config);
     } catch (error) {
       console.error('Error creating template:', error);
@@ -111,18 +111,6 @@ export default {
       return response.data;
     } catch (error) {
       console.error('Error getting template document:', error);
-      throw error;
-    }
-  },
-  
-  async updateContentMap(accessToken, templateId, updatedContentMap) {
-    try {
-      const response = await axios.put(`${BACKEND_ENDPOINT_URL_TEMPLATES}${templateId}/content-map`, updatedContentMap, {
-        headers: { 'Authorization': `Bearer ${accessToken}` }
-      });
-      return response;
-    } catch (error) {
-      console.error('Error updating content map:', error);
       throw error;
     }
   },

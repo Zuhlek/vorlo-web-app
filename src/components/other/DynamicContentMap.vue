@@ -1,76 +1,61 @@
 <template>
-    <div>
-
-        <v-table density="compact">
-            <thead class="table-header">
-                <tr>
-                    <th class="text-left">
-                        Key
-                    </th>
-                    <th class="text-left">
-                        Value
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="item in keyValuePairs" :key="item.key" class="table-row">
-                    <td >{{ item.key }}</td>
-                    <td style="width: 100%;">
-                        <v-text-field variant="underlined" v-model="item.value" @focus="storeOriginalValue(item.value)"
-                            @blur="reportChange(item.value)"></v-text-field>
-                    </td>
-                </tr>
-            </tbody>
-        </v-table>
-
-    </div>
+  <div>
+    <v-table density="compact">
+      <thead class="table-header">
+        <tr>
+          <th class="text-left">Token name</th>
+          <th class="text-left">Token value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in selectedDocument.dynamicContents" :key="item.id" class="table-row">
+          <td>{{ item.tokenName }}</td>
+          <td style="width: 100%">
+            <v-text-field
+              variant="underlined"
+              v-model="item.tokenValue"
+              @focus="storeOriginalValue(item.tokenValue)"
+              @blur="reportChange(item.tokenValue)"
+            ></v-text-field>
+          </td>
+        </tr>
+      </tbody>
+    </v-table>
+  </div>
 </template>
-
 
 <style scoped>
 .table-header {
-    background-color: #C8E6C9;
+  background-color: #c8e6c9;
 }
 
 .table-row {
-    background-color: #E8F5E9;
+  background-color: #e8f5e9;
 }
 </style>
 
-
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 export default {
-    name: 'dynamic-content-map',
-    data() {
-        return {
-            keyValuePairs: null,
-            originalValue: null,
-        }
+  name: "dynamic-content-map",
+  data() {
+    return {
+      originalValue: null,
+    };
+  },
+  computed: {
+    ...mapGetters(["selectedDocument"]),
+  },
+  methods: {
+    storeOriginalValue(value) {
+      this.originalValue = value;
     },
-    computed: {
-        ...mapGetters(['selectedProject']),
+    reportChange(value) {
+      if (value !== this.originalValue) {
+        this.$emit("dynamic-contents-changed", this.selectedDocument.dynamicContents);
+      }
     },
-    watch: {
-        selectedProject: {
-            immediate: true,
-            handler(newValue) {
-                if (newValue && newValue.template && newValue.template.contentMap) {
-                    this.keyValuePairs = Object.entries(newValue.template.contentMap).map(([key, value]) => ({ key, value }));
-                }
-            },
-        },
-    },
-    methods: {
-        storeOriginalValue(value) {
-            this.originalValue = value;
-        },
-        reportChange(value) {
-            if (value !== this.originalValue) {
-                this.$emit("content-map-changed", this.keyValuePairs);
-            }
-        },
-    },
-
-}
+  },
+};
 </script>
+

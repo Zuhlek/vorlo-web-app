@@ -7,8 +7,7 @@
     <v-sheet v-if="showForm" rounded color="green-lighten-5">
         <v-form v-model="valid" class="pa-6" ref="createProjectForm">
             <v-text-field label="Project name" variant="underlined" :rules="valueRequired" v-model="projectName" />
-            <v-combobox density="compact" variant="solo" :items="this.templates" item-title="name" item-value="id"
-                label="Select a template" v-model="selectedItem" :return-object="true" />
+            <v-text-field label="Project description" variant="underlined" :rules="valueRequired" v-model="projectDescription" /> 
             <v-container class="d-flex justify-center">
                 <v-btn type="submit" variant="tonal" @click.prevent="submit" :disabled="!valid">Upload</v-btn>
             </v-container>
@@ -18,7 +17,7 @@
 
 <script>
 
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
     name: 'project-create-form',
@@ -34,27 +33,24 @@ export default {
             valid: false, // initial value of form validation
             showForm: true,
             projectName: null,
+            projectDescription: null,
             errorAlert: false,
             successAlert: false,
             selectedItem: [],
 
         }
     },
-    computed: {
-        ...mapGetters(['templates']),
-    },
-    mounted() {
-            this.getTemplates()
-    },
     methods: {
-        ...mapActions(['getTemplates', 'createProject']),
+        ...mapActions(['createProject']),
 
         async submit() {
             if (this.$refs.createProjectForm.validate()) { // check form validity before submitting
                 try{
                     await this.createProject({
                         templateId: this.selectedItem.id, 
-                        projectName: this.projectName})
+                        projectName: this.projectName,
+                        projectDescription: this.projectDescription
+                    })
                     this.$refs.createProjectForm.reset()
                     this.projectName = null;
                     this.projectDescription = null;

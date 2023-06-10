@@ -10,7 +10,7 @@
                         Project name
                     </th>
                     <th class="text-left">
-                        Template name
+                        Project description
                     </th>
                     <th class="text-left">
                         Actions
@@ -21,7 +21,7 @@
                 <tr v-for="item in projects" :key="item.id" class="table-row">
                     <td>{{ item.id }}</td>
                     <td>{{ item.name }}</td>
-                    <td>{{ item.template ? item.template.name : 'N/A' }}</td>
+                    <td>{{ item.description }}</td>
                     <td>
                         <v-btn icon variant="plain" @click="openProjectDetails(item.id)">
                             <v-icon>mdi-launch</v-icon>
@@ -62,16 +62,16 @@ import { mapActions, mapGetters } from 'vuex';
 export default {
     name: 'project-list',
     components: {
-        ProjectUpdateForm
+        ProjectUpdateForm,
     },
     data() {
         return {
             updateProjectDialog: false,
-            selectedProjectId: -1
+            selectedProjectId: -1,
         }
     },
     computed: {
-        ...mapGetters(['projects', 'downloadedTemplate']),
+        ...mapGetters(['projects']),
     },
     mounted() {
         this.getProjects()
@@ -84,37 +84,13 @@ export default {
 
             await this.getProject(projectId)
             .then(() =>
-                this.$router.push("/details")
+                this.$router.push("/documents")
             )
         },
         editSelectedProject(projectId) {
             if (projectId === -1) { return; }
             this.selectedProjectId = projectId;
             this.updateProjectDialog = true;
-        },
-    },
-    watch: {
-        downloadedTemplate(newValue) {
-            if (newValue) {
-                const { data, headers } = newValue;
-                const url = window.URL.createObjectURL(new Blob([data]));
-                const link = document.createElement('a');
-                link.href = url;
-
-
-                const contentDisposition = headers['content-disposition'];
-                let fileName = 'unknown';
-                if (contentDisposition) {
-                    const fileNameMatch = contentDisposition.match(/filename="([^"]+)/);
-                    if (fileNameMatch && fileNameMatch.length > 1) {
-                        fileName = fileNameMatch[1];
-                    }
-                }
-                link.setAttribute('download', fileName);
-                document.body.appendChild(link);
-                link.click();
-                link.parentNode.removeChild(link);
-            }
         },
     },
 }

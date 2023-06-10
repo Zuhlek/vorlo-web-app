@@ -12,8 +12,12 @@
                 v-model="projectName" 
                 :placeholder="projectName"
                 />
-                <v-combobox density="compact" variant="solo" :items="this.templates" item-title="name" item-value="id"
-                label="Select a template" v-model="selectedItem" :return-object="true" />
+            <v-text-field 
+                label="Project description" 
+                variant="underlined" 
+                v-model="projectDescription" 
+                :placeholder="projectDescription"
+                />
             <v-container class="d-flex justify-center">
                 <v-btn 
                     variant="tonal"
@@ -42,7 +46,7 @@ export default {
     data() {
         return {
             projectName: null,
-            projectTemplateName: null,
+            projectDescription: null,
             errorAlert: false,
             successAlert: false,
             selectedItem: [],
@@ -50,24 +54,23 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['templates', 'selectedProject']),
+        ...mapGetters(['selectedProject']),
     },
     async mounted() {
         try {
             await this.getProject(this.projectId)
             this.projectName = this.selectedProject.name;
-            this.projectTemplateName = this.selectedProject.template.name;
-            this.getTemplates()
+            this.projectDescription = this.selectedProject.description;
         } catch (error) {
             console.error('Error getting project metadata:', error);
         }
     },
 
     methods: {
-        ...mapActions(['getTemplates', 'getProject', 'updateProject']),
+        ...mapActions(['getProject', 'updateProject']),
 
         async submitUpdateForm() {
-            if (!this.projectName && !this.projectTemplateName) {
+            if (!this.projectName && !this.projectDocumentTemplateName) {
                 console.warn('Mindestens eines der Felder muss einen Wert haben.');
                 return;
             }
@@ -75,12 +78,12 @@ export default {
                 try {
                     await this.updateProject({
                         projectId: this.projectId,
-                        templateId: this.selectedProject.template.id,
                         projectName: this.projectName, 
+                        projectDescription: this.projectDescription
                     }) 
                     this.$refs.updateProjectForm.reset()
                     this.projectName = null;
-                    this.projectTemplateName = null;
+                    this.projectDescription = null
                     this.successAlert = true;
                     this.showForm = false;
                 } catch (error) {

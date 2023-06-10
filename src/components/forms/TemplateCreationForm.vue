@@ -4,16 +4,15 @@
     <v-alert class="my-6" v-model="errorAlert" closable type="error"
         title="Encountered an error when trying to create new template" @click:close="closeWholeDialog"></v-alert>
 
-
     <v-sheet v-if="showForm" rounded color="green-lighten-5">
         <v-form v-model="valid" class="pa-6" ref="createTemplateForm">
+            <v-text-field label="Template name" variant="underlined" :rules="valueRequired" v-model="templateName" />
+            <v-text-field label="Template description" variant="underlined" :rules="valueRequired"
+                v-model="templateDescription" />
             <v-file-input label="Select template from files" variant="underlined"
                 accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 show-size :rules="fileRequired" @change="onFileSelected">
             </v-file-input>
-            <v-text-field label="Template description" variant="underlined" :rules="valueRequired"
-                v-model="templateDescription" />
-            <v-text-field label="Template name" variant="underlined" :rules="valueRequired" v-model="templateName" />
             <v-container class="d-flex justify-center">
                 <v-btn type="submit" variant="tonal" @click.prevent="submit" :disabled="!valid">Upload</v-btn>
             </v-container>
@@ -40,6 +39,7 @@ export default {
             templateFile: null,
             templateName: null,
             templateDescription: null,
+            templateType: 'GENERIC',
             errorAlert: false,
             successAlert: false
         }
@@ -56,6 +56,7 @@ export default {
                         templateFile: this.templateFile,
                         templateName: this.templateName,
                         templateDescription: this.templateDescription,
+                        templateType: this.templateType
                     })
                     this.$refs.createTemplateForm.reset();
                     this.templateFile = null;

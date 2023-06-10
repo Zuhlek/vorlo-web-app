@@ -9,6 +9,7 @@ export default {
       const response = await axios.get(BACKEND_ENDPOINT_URL_PROJECTS, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
       });
+      console.log(response)
       return response.data.data.projects;
     } catch (error) {
       console.error('Error getting projects:', error);
@@ -39,13 +40,13 @@ export default {
     }
   },
 
-  async updateProject(accessToken, projectId, templateId, projectName) {
+  async updateProject(accessToken, projectId, projectName, projectDescription) {
     try {
       const formData = new FormData();
       formData.append('id', projectId);
-      formData.append('templateId', templateId);
       formData.append('projectName', projectName);
-      axios.put(BACKEND_ENDPOINT_URL_PROJECTS, formData, {
+      formData.append('projectDescription', projectDescription);
+      axios.put(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`, formData, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
       });
     } catch (error) {
@@ -54,11 +55,11 @@ export default {
     }
   },
 
-  async createProject(accessToken, templateId, projectName) {
+  async createProject(accessToken, projectName, projectDescription) {
     try {
       const formData = new FormData();
-      formData.append('templateId', templateId);
       formData.append('projectName', projectName);
+      formData.append('projectDescription', projectDescription)
       return await axios.post(BACKEND_ENDPOINT_URL_PROJECTS, formData, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
       });
@@ -68,16 +69,4 @@ export default {
     }
   },
 
-  async createAndDownloadTemplate(accessToken, projectId) {
-    try {
-      const response = await axios.get(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}/generate-document`, {
-        responseType: "blob",
-        headers: { 'Authorization': `Bearer ${accessToken}` }
-      });
-      return { data: response.data, headers: response.headers };
-    } catch (error) {
-      console.error('Error creating and downloading template:', error);
-      throw error;
-    }
-  },
 };

@@ -2,7 +2,7 @@
   <div class="pa-6">
     <div >
       <v-sheet class="d-flex justify-space-around">
-        <v-label style="font-size: larger">Templates</v-label>
+        <v-label class="text-h5">Templates</v-label>
         <v-spacer></v-spacer>
         <div v-sheet class="d-flex flex-row-reverse">
         <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="createNewTemplate">
