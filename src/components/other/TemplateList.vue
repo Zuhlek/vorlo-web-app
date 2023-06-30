@@ -39,7 +39,7 @@
         <br>
 
         <v-dialog v-model="updateTemplateDialog" width="500">
-            <template-update-form :template-id="selectedTemplateId" @close-dialog="updateTemplateDialog = false" />
+            <TemplateForm :template-id="selectedTemplateId" @close-dialog="updateTemplateDialog = false" />
         </v-dialog>
     </div>
 </template>
@@ -55,13 +55,13 @@
 </style>
 
 <script>
-import TemplateUpdateForm from '../forms/TemplateUpdateForm.vue';
+import TemplateForm from '../forms/TemplateForm.vue';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'template-list',
     components: {
-        TemplateUpdateForm,
+        TemplateForm,
     },
     data() {
         return {

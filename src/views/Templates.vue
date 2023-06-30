@@ -12,7 +12,7 @@
       </v-sheet>
     </div>
       <v-dialog v-model="createTemplateDialog" width="500">
-        <TemplateCreationForm @close-dialog="createTemplateDialog = false"/>
+        <TemplateForm @close-dialog="createTemplateDialog = false"/>
       </v-dialog>
     <br>
     <TemplateList />
@@ -20,13 +20,13 @@
 </template>
   
 <script>
-import TemplateCreationForm from '@/components/forms/TemplateCreationForm.vue';
+import TemplateForm from '@/components/forms/TemplateForm.vue';
 import TemplateList from '@/components/other/TemplateList.vue';
 
 export default {
   name: "templates-view",
   components: {
-    TemplateCreationForm,
+    TemplateForm,
     TemplateList
   },
   data() {

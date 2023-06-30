@@ -203,6 +203,7 @@ const store = createStore({
       dispatch("getDocumentsByProjectId", projectId);
     },
     async createAndDownloadDocument({ commit, state }, documentId) {
+      console.log(documentId)
       const downloadData = await documentService.createAndDownloadDocument(
         state.accessToken, 
         documentId,
@@ -210,6 +211,7 @@ const store = createStore({
       commit("setDownloadData", downloadData);
     },
     async updateDynamicContents({ commit, state }, { documentId, dynamicContents }) {
+      
       const dynamicContent = await documentService.updateDynamicContents(
         state.accessToken,
         documentId,

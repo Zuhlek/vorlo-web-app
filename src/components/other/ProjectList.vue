@@ -24,7 +24,7 @@
                     <td>{{ item.description }}</td>
                     <td>
                         <v-btn icon variant="plain" @click="openProjectDetails(item.id)">
-                            <v-icon>mdi-launch</v-icon>
+                            <v-icon>mdi-file-document-multiple-outline</v-icon>
                         </v-btn>
                         <v-btn icon variant="plain" @click="editSelectedProject(item.id)">
                             <v-icon>mdi-pencil</v-icon>

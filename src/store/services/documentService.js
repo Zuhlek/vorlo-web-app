@@ -72,6 +72,7 @@ export default {
   },
 
   async createAndDownloadDocument(accessToken, documentId) {
+    console.log(".."+documentId)
     try {
       const response = await axios.get(`${BACKEND_ENDPOINT_URL_DOCUMENTS}${documentId}/generate-document`, {
         responseType: "blob",
