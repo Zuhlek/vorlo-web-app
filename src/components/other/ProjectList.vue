@@ -1,20 +1,28 @@
 <template>
     <div>
+        <div class="d-flex justify-space-around">
+            <v-label class="text-h5">Projects</v-label>
+
+            <v-spacer></v-spacer>
+
+            <div class="d-flex flex-row-reverse">
+                <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="createNewProject">
+                    <v-icon>mdi-plus</v-icon>
+                </v-chip>
+            </div>
+        </div>
+
+        <v-dialog v-model="projectDialog" width="500">
+            <ProjectForm :project-id="selectedProject ? selectedProject.id : null" @close-dialog="projectDialog = false" />
+        </v-dialog>
+
         <v-table rounded density="compact">
             <thead class="table-header">
                 <tr>
-                    <th class="text-left">
-                        #
-                    </th>
-                    <th class="text-left">
-                        Project name
-                    </th>
-                    <th class="text-left">
-                        Project description
-                    </th>
-                    <th class="text-left">
-                        Actions
-                    </th>
+                    <th class="text-left">#</th>
+                    <th class="text-left">Project name</th>
+                    <th class="text-left">Project description</th>
+                    <th class="text-left">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,66 +40,68 @@
                         <v-btn icon variant="plain" @click="deleteProject(item.id)">
                             <v-icon>mdi-trash-can-outline</v-icon>
                         </v-btn>
-
                     </td>
                 </tr>
             </tbody>
         </v-table>
-        <br>
+        <br />
 
-        <v-dialog v-model="updateProjectDialog" width="500">
-            <project-update-form :project-id="selectedProjectId" @close-dialog="updateProjectDialog = false"/>
-        </v-dialog>
+
     </div>
 </template>
 
 <style scoped>
 .table-header {
-    background-color: #C8E6C9;
+    background-color: #c8e6c9;
 }
 
 .table-row {
-    background-color: #E8F5E9;
+    background-color: #e8f5e9;
 }
 </style>
 
 <script>
-import ProjectUpdateForm from '../forms/ProjectUpdateForm.vue';
-import { mapActions, mapGetters } from 'vuex';
+import ProjectForm from "../forms/ProjectForm.vue";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
-    name: 'project-list',
+    name: "project-list",
     components: {
-        ProjectUpdateForm,
+        ProjectForm,
     },
     data() {
         return {
-            updateProjectDialog: false,
-            selectedProjectId: -1,
-        }
+            projectDialog: false,
+        };
     },
     computed: {
-        ...mapGetters(['projects']),
+        ...mapGetters(["projects", "selectedProject"]),
     },
     mounted() {
-        this.getProjects()
+        this.getProjects();
     },
     methods: {
-        ...mapActions(['getProjects', 'getProject', 'deleteProject']),
-        async openProjectDetails(projectId) {
+        ...mapActions(["getProjects", "getProject", "deleteProject"]),
 
-            if (projectId == null) return;
-
-            await this.getProject(projectId)
-            .then(() =>
-                this.$router.push("/documents")
-            )
+        createNewProject() {
+            this.$store.commit("setSelectedProject", null)
+            this.projectDialog = true;
         },
-        editSelectedProject(projectId) {
-            if (projectId === -1) { return; }
-            this.selectedProjectId = projectId;
-            this.updateProjectDialog = true;
+
+        async openProjectDetails(projectId) {
+            if (projectId == null) return;
+            await this.getProject(projectId).then(() =>
+                this.$router.push("/documents")
+            );
+        },
+
+        async editSelectedProject(projectId) {
+            if (projectId === -1) {
+                return;
+            }
+            await this.getProject(projectId);
+            this.projectDialog = true;
         },
     },
-}
+};
 </script>

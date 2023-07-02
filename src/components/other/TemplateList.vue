@@ -1,20 +1,29 @@
 <template>
     <div>
+        <div class="d-flex justify-space-around">
+            <v-label class="text-h5"> Templates </v-label>
+
+            <v-spacer></v-spacer>
+
+            <div class="d-flex flex-row-reverse">
+                <v-chip class="ma-2" size="x-large" color="green" text-color="white" @click="createNewTemplate">
+                    <v-icon>mdi-plus</v-icon>
+                </v-chip>
+            </div>
+        </div>
+
+        <v-dialog v-model="templateDialog" width="500">
+            <TemplateForm :template-id="selectedTemplate ? selectedTemplate.id : null"
+                @close-dialog="templateDialog = false" />
+        </v-dialog>
+        
         <v-table rounded density="compact">
             <thead class="table-header">
                 <tr>
-                    <th class="text-left">
-                        #
-                    </th>
-                    <th class="text-left">
-                        Template name
-                    </th>
-                    <th class="text-left">
-                        Template description
-                    </th>
-                    <th class="text-left">
-                        Actions
-                    </th>
+                    <th class="text-left">#</th>
+                    <th class="text-left">Template name</th>
+                    <th class="text-left">Template description</th>
+                    <th class="text-left">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,54 +45,50 @@
                 </tr>
             </tbody>
         </v-table>
-        <br>
-
-        <v-dialog v-model="updateTemplateDialog" width="500">
-            <TemplateForm :template-id="selectedTemplateId" @close-dialog="updateTemplateDialog = false" />
-        </v-dialog>
+        <br />
     </div>
 </template>
 
-<style scoped>
-.table-header {
-    background-color: #C8E6C9;
-}
-
-.table-row {
-    background-color: #E8F5E9;
-}
-</style>
-
 <script>
-import TemplateForm from '../forms/TemplateForm.vue';
-import { mapActions, mapGetters } from 'vuex';
+import TemplateForm from "../forms/TemplateForm.vue";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
-    name: 'template-list',
+    name: "template-list",
     components: {
         TemplateForm,
     },
     data() {
         return {
-            updateTemplateDialog: false,
-            selectedTemplateId: -1
-        }
+            templateDialog: false,
+        };
     },
     computed: {
-        ...mapGetters(['templates', 'downloadedTemplate']),
+        ...mapGetters(["templates", "downloadedTemplate", "selectedTemplate"]),
     },
     mounted() {
         this.getTemplates();
     },
 
     methods: {
+        ...mapActions([
+            "getTemplates",
+            "deleteTemplate",
+            "downloadTemplate",
+            "getTemplate",
+        ]),
 
-        ...mapActions(['getTemplates', 'deleteTemplate', 'downloadTemplate']),
+        createNewTemplate() {
+            this.$store.commit("setSelectedTemplate", null)
+            this.templateDialog = true;
+        },
 
-        editSelectedTemplate(templateId) {
-            if (templateId === -1) { return; }
-            this.selectedTemplateId = templateId;
-            this.updateTemplateDialog = true;
+        async editSelectedTemplate(templateId) {
+            if (templateId === -1) {
+                return;
+            }
+            await this.getTemplate(templateId);
+            this.templateDialog = true;
         },
     },
     watch: {
@@ -91,22 +96,32 @@ export default {
             if (newValue) {
                 const { data, headers } = newValue;
                 const url = window.URL.createObjectURL(new Blob([data]));
-                const link = document.createElement('a');
+                const link = document.createElement("a");
                 link.href = url;
-                const contentDisposition = headers['content-disposition'];
-                let fileName = 'unknown';
+                const contentDisposition = headers["content-disposition"];
+                let fileName = "unknown";
                 if (contentDisposition) {
                     const fileNameMatch = contentDisposition.match(/filename="([^"]+)/);
                     if (fileNameMatch && fileNameMatch.length > 1) {
                         fileName = fileNameMatch[1];
                     }
                 }
-                link.setAttribute('download', fileName);
+                link.setAttribute("download", fileName);
                 document.body.appendChild(link);
                 link.click();
                 link.parentNode.removeChild(link);
             }
         },
     },
-}
+};
 </script>
+
+<style scoped>
+.table-header {
+    background-color: #c8e6c9;
+}
+
+.table-row {
+    background-color: #e8f5e9;
+}
+</style>

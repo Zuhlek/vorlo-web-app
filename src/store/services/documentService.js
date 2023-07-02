@@ -40,13 +40,25 @@ export default {
     }
   },
 
-  async updateDocuments(accessToken, documentId, documentName, documentDescription) {
+  async updateDocument(accessToken, documentId, projectId, templateId, documentName, documentDescription) {
     try {
+      console.log("service method updateDocument...")
+      console.log("documentId = " + documentId)
+      console.log("templateId = " + templateId)
+      console.log("documentName = " + documentName)
+      console.log("documentDescription = " + documentDescription)
       const formData = new FormData();
-      formData.append('id', documentId);
-      formData.append('documentName', documentName);
-      formData.append('documentDescription', documentDescription);
-      axios.put(`${BACKEND_ENDPOINT_URL_DOCUMENTS}${documentId}`, formData, {
+      formData.append('projectId', projectId);
+      if(templateId){
+        formData.append('templateId', templateId);
+      }
+      if (documentName) {
+        formData.append('documentName', documentName);
+      }
+      if (documentDescription) {
+        formData.append('documentDescription', documentDescription);
+      }
+      await axios.put(`${BACKEND_ENDPOINT_URL_DOCUMENTS}${documentId}`, formData, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
       });
     } catch (error) {
@@ -72,7 +84,6 @@ export default {
   },
 
   async createAndDownloadDocument(accessToken, documentId) {
-    console.log(".."+documentId)
     try {
       const response = await axios.get(`${BACKEND_ENDPOINT_URL_DOCUMENTS}${documentId}/generate-document`, {
         responseType: "blob",

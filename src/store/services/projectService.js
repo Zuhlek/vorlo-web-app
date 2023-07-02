@@ -9,7 +9,6 @@ export default {
       const response = await axios.get(BACKEND_ENDPOINT_URL_PROJECTS, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
       });
-      console.log(response)
       return response.data.data.projects;
     } catch (error) {
       console.error('Error getting projects:', error);
@@ -46,7 +45,7 @@ export default {
       formData.append('id', projectId);
       formData.append('projectName', projectName);
       formData.append('projectDescription', projectDescription);
-      axios.put(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`, formData, {
+      await axios.put(`${BACKEND_ENDPOINT_URL_PROJECTS}${projectId}`, formData, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
       });
     } catch (error) {

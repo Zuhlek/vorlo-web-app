@@ -6,7 +6,6 @@
     <v-icon>mdi-folder-plus-outline</v-icon>
   </div>
   <div v-else class="pa-6">
-
     <DocumentList />
   </div>
 </template>

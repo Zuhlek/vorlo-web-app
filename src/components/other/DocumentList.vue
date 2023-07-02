@@ -1,8 +1,10 @@
 <template>
   <div>
-    <v-sheet class="d-flex justify-space-around">
+    <div class="d-flex justify-space-around">
       <v-label class="text-h5">
-        {{ this.selectedProject.name }}
+        Documents for project '{{ this.selectedProject.name }} ({{
+          this.selectedProject.description
+        }})'
       </v-label>
 
       <v-spacer></v-spacer>
@@ -17,11 +19,15 @@
           <v-icon>mdi-plus</v-icon>
         </v-chip>
       </div>
-    </v-sheet>
+    </div>
 
-    <v-dialog v-model="createDocumentDialog" width="500">
-      <document-creation-form @close-dialog="createDocumentDialog = false" />
+    <v-dialog v-model="documentDialog" width="500">
+      <DocumentForm
+        :documentId="selectedDocument ? selectedDocument.id : null"
+        @close-dialog="documentDialog = false"
+      />
     </v-dialog>
+
     <br />
     <v-table rounded density="compact">
       <thead class="table-header">
@@ -47,10 +53,10 @@
             <v-btn icon variant="plain" @click="openDocumentDetails(item.id)">
               <v-icon>mdi-content-duplicate</v-icon>
             </v-btn>
-            <v-btn icon variant="plain" @click="editSelectedProject(item.id)">
+            <v-btn icon variant="plain" @click="editSelectedDocument(item.id)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
-            <v-btn icon variant="plain" @click="deleteProject(item.id)">
+            <v-btn icon variant="plain" @click="deleteDocument(item.id)">
               <v-icon>mdi-trash-can-outline</v-icon>
             </v-btn>
           </td>
@@ -61,6 +67,47 @@
   </div>
 </template>
 
+<script>
+import DocumentForm from "../forms/DocumentForm.vue";
+import { mapActions, mapGetters } from "vuex";
+
+export default {
+  name: "document-list",
+  components: {
+    DocumentForm,
+  },
+  data() {
+    return {
+      documentDialog: false,
+    };
+  },
+  computed: {
+    ...mapGetters(["documents", "selectedProject", "selectedDocument"]),
+  },
+  mounted() {
+    this.getDocumentsByProjectId(this.selectedProject.id);
+  },
+  methods: {
+    ...mapActions(["getDocumentsByProjectId", "getDocument", "deleteDocument"]),
+    createNewDocument() {
+      this.$store.commit("setSelectedDocument", null)
+      this.documentDialog = true;
+    },
+    async editSelectedDocument(documentId) {
+      if (documentId === -1) {
+        return;
+      }
+      await this.getDocument(documentId);
+      this.documentDialog = true;
+    },
+    async openDocumentDetails(documentId) {
+      await this.getDocument(documentId);
+      this.$router.push("/details");
+    },
+  },
+};
+</script>
+
 <style scoped>
 .table-header {
   background-color: #c8e6c9;
@@ -70,38 +117,3 @@
   background-color: #e8f5e9;
 }
 </style>
-
-<script>
-import DocumentCreationForm from "../forms/DocumentCreationForm.vue";
-import { mapActions, mapGetters } from "vuex";
-
-export default {
-  name: "document-list",
-  components: {
-    DocumentCreationForm,
-  },
-  data() {
-    return {
-      createDocumentDialog: false,
-    };
-  },
-  computed: {
-    ...mapGetters(["documents", "selectedProject"]),
-  },
-  mounted() {
-    this.getDocumentsByProjectId(this.selectedProject.id);
-  },
-  methods: {
-    ...mapActions(["getDocumentsByProjectId", "getDocument"]),
-    createNewDocument() {
-      this.createDocumentDialog = true;
-    },
-    async openDocumentDetails(documentId) {
-      if (documentId == null) return;
-      await this.getDocument(documentId).then(() =>
-        this.$router.push("/details")
-      );
-    },
-  },
-};
-</script>

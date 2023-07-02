@@ -179,21 +179,24 @@ const store = createStore({
       console.log(document)
       commit("setSelectedDocument", document);
     },
-    async deleteDocument({ commit, state }, documentId, projectId) {
+    async deleteDocument({ dispatch, state }, documentId, projectId) {
       await documentService.deleteDocument(state.accessToken, documentId);
-      commit("getDocumentsByProjectId", projectId);
+      dispatch("getDocumentsByProjectId", projectId);
     },
     async updateDocument(
-      { commit, state },
-      { projectId, documentId, documentName, documentDescription }
+      { dispatch, state },
+      { documentId, projectId, templateId, documentName, documentDescription }
     ) {
+      console.log("store method updateDocument...")
       await documentService.updateDocument(
         state.accessToken,
         documentId,
+        projectId, 
+        templateId,
         documentName,
         documentDescription
       );
-      commit("getDocumentsByProjectId", projectId);
+      dispatch("getDocumentsByProjectId", projectId);
     },
     async createDocument(
       { dispatch, state },

@@ -79,7 +79,6 @@ export default {
     async mounted() {
         if (this.isUpdateMode) {
             try {
-                await this.getTemplate(this.templateId);
                 this.templateName = this.selectedTemplate.name;
                 this.templateDescription = this.selectedTemplate.description;
                 this.templateFileName = this.selectedTemplate.filePath.split("/")[1];
@@ -89,7 +88,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(["createTemplate", "updateTemplate", "getTemplate"]),
+        ...mapActions(["createTemplate", "updateTemplate"]),
         onFileSelected(event) {
             this.templateFile = event.target.files[0];
         },
