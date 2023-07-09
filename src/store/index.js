@@ -176,18 +176,16 @@ const store = createStore({
     },
     async getDocument({ commit, state }, documentId) {
       const document = await documentService.getDocument(state.accessToken, documentId);
-      console.log(document)
       commit("setSelectedDocument", document);
     },
-    async deleteDocument({ dispatch, state }, documentId, projectId) {
+    async deleteDocument({ dispatch, state }, documentId) {
       await documentService.deleteDocument(state.accessToken, documentId);
-      dispatch("getDocumentsByProjectId", projectId);
+      dispatch("getDocumentsByProjectId", state.selectedProject.id);
     },
     async updateDocument(
       { dispatch, state },
       { documentId, projectId, templateId, documentName, documentDescription }
     ) {
-      console.log("store method updateDocument...")
       await documentService.updateDocument(
         state.accessToken,
         documentId,
@@ -206,7 +204,6 @@ const store = createStore({
       dispatch("getDocumentsByProjectId", projectId);
     },
     async createAndDownloadDocument({ commit, state }, documentId) {
-      console.log(documentId)
       const downloadData = await documentService.createAndDownloadDocument(
         state.accessToken, 
         documentId,

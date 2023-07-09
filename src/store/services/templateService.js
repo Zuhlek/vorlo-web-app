@@ -11,7 +11,6 @@ export default {
       const response = await axios.get(BACKEND_ENDPOINT_URL_TEMPLATES, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
       });
-      console.log(response)
       return response.data.data.templates
     } catch (error) {
       console.error('Error getting templates:', error);

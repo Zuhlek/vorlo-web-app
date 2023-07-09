@@ -8,9 +8,9 @@
 
     <v-sheet v-if="showForm" rounded color="green-lighten-5">
         <v-form v-model="valid" class="pa-6" ref="projectForm">
-            <v-text-field :label="isUpdateMode ? 'Update project name' : 'Project name'" variant="underlined"
+            <v-text-field :label="isUpdateMode ? 'Update project name' : 'Project name'" variant="solo"
                 :rules="valueRequired" v-model="projectName" :placeholder="isUpdateMode ? projectName : null" />
-            <v-text-field :label="isUpdateMode ? 'Update project description' : 'Project description'" variant="underlined"
+            <v-text-field :label="isUpdateMode ? 'Update project description' : 'Project description'" variant="solo"
                 :rules="valueRequired" v-model="projectDescription"
                 :placeholder="isUpdateMode ? projectDescription : null" />
             <v-container class="d-flex justify-center">

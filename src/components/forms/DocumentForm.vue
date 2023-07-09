@@ -27,7 +27,7 @@
     <v-form v-model="valid" class="pa-6" ref="documentForm">
       <v-text-field
         :label="isUpdateMode ? 'Update document name' : 'Document name'"
-        variant="underlined"
+        variant="solo"
         :rules="valueRequired"
         v-model="documentName"
         :placeholder="isUpdateMode ? documentName : null"
@@ -36,14 +36,14 @@
         :label="
           isUpdateMode ? 'Update document description' : 'Document description'
         "
-        variant="underlined"
+        variant="solo"
         :rules="valueRequired"
         v-model="documentDescription"
         :placeholder="isUpdateMode ? documentDescription : null"
       />
       <v-combobox
         density="compact"
-        variant="underlined"
+        variant="solo"
         :items="this.templates"
         item-title="name"
         item-value="id"
@@ -128,8 +128,6 @@ export default {
         try {
           if (this.isUpdateMode) {
             document.documentId = this.documentId;
-            console.log("updated values document: ")
-            console.log(document)
             await this.updateDocument(document);
           } else {
             await this.createDocument(document);

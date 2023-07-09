@@ -17,7 +17,6 @@ export default {
   },
 
   async getDocument(accessToken, documentId) {
-    console.log("getting document with id " + documentId)
     try {
       const response = await axios.get(`${BACKEND_ENDPOINT_URL_DOCUMENTS}${documentId}`, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
@@ -29,7 +28,7 @@ export default {
     }
   },
 
-  async deleteDocuments(accessToken, documentId) {
+  async deleteDocument(accessToken, documentId) {
     try {
       await axios.delete(`${BACKEND_ENDPOINT_URL_DOCUMENTS}${documentId}`, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
@@ -42,11 +41,6 @@ export default {
 
   async updateDocument(accessToken, documentId, projectId, templateId, documentName, documentDescription) {
     try {
-      console.log("service method updateDocument...")
-      console.log("documentId = " + documentId)
-      console.log("templateId = " + templateId)
-      console.log("documentName = " + documentName)
-      console.log("documentDescription = " + documentDescription)
       const formData = new FormData();
       formData.append('projectId', projectId);
       if(templateId){
@@ -97,8 +91,6 @@ export default {
   },
 
   async updateDynamicContents(accessToken, documentId, dynamicContents) {
-    console.log("trying to update dynamic contents")
-    console.log(dynamicContents)
     try {
       const response = await axios.put(`${BACKEND_ENDPOINT_URL_DOCUMENTS}${documentId}/dynamic-content`, dynamicContents, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
