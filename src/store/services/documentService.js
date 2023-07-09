@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-const BACKEND_ENDPOINT_URL_DOCUMENTS = "http://localhost:8080/api/v1/documents/";
+const BACKEND_ENDPOINT_URL_DOCUMENTS = "https://vorlo-api-app.onrender.com/api/v1/documents/";
 
 export default {
   async getDocumentsByProjectId(accessToken, projectId) {
