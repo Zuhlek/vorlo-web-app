@@ -58,7 +58,7 @@ export default {
             items: [
                 {
                     title: 'Templates',
-                    icon: 'mdi-file-document-plus-outline',
+                    icon: 'mdi-mirror-rectangle',
                     to:'/templates'
                 },
                 {
